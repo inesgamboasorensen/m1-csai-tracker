@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>M1 Agent — Analytics</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #F3F4F6; color: #111827; min-height: 100vh; }
+
+    /* ── Login screen ── */
+    #login-screen { position: fixed; inset: 0; background: linear-gradient(135deg,#671f75,#8a2a9a); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+    .login-box { background: #fff; border-radius: 20px; padding: 40px 36px; width: 340px; box-shadow: 0 20px 60px rgba(0,0,0,.25); text-align: center; }
+    .login-box svg { width: 48px; height: 48px; margin-bottom: 16px; }
+    .login-box h2 { font-size: 18px; font-weight: 700; color: #111827; margin-bottom: 4px; }
+    .login-box p  { font-size: 13px; color: #9CA3AF; margin-bottom: 24px; }
+    .login-box input { width: 100%; border: 1.5px solid #E5E7EB; border-radius: 10px; padding: 10px 14px; font-size: 14px; outline: none; margin-bottom: 12px; }
+    .login-box input:focus { border-color: #8a2a9a; }
+    .login-box button { width: 100%; background: linear-gradient(135deg,#671f75,#8a2a9a); color: #fff; border: none; border-radius: 10px; padding: 11px; font-size: 14px; font-weight: 600; cursor: pointer; }
+    .login-box button:hover { opacity: .88; }
+    .login-error { color: #DC2626; font-size: 12px; margin-top: 8px; min-height: 16px; }
+
+    /* ── Header ── */
+    header { background: linear-gradient(135deg, #671f75, #8a2a9a); color: #fff; padding: 18px 32px; display: flex; align-items: center; gap: 14px; }
+    header svg { width: 30px; height: 30px; flex-shrink: 0; }
+    header h1 { font-size: 18px; font-weight: 700; }
+    header p  { font-size: 12px; opacity: .75; margin-top: 2px; }
+
+    /* ── Config bar ── */
+    #config-bar { background: #fff; border-bottom: 1px solid #E5E7EB; padding: 12px 32px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    #config-bar label { font-size: 13px; color: #6B7280; white-space: nowrap; }
+    #config-bar input { border: 1.5px solid #E5E7EB; border-radius: 8px; padding: 6px 12px; font-size: 13px; width: 300px; outline: none; }
+    #config-bar input:focus { border-color: #8a2a9a; }
+    #btn-load { background: linear-gradient(135deg, #671f75, #8a2a9a); color: #fff; border: none; border-radius: 8px; padding: 7px 20px; font-size: 13px; font-weight: 600; cursor: pointer; }
+    #btn-load:hover { opacity: .88; }
+    #load-status { font-size: 13px; color: #6B7280; }
+
+    /* ── Tabs ── */
+    .tab-nav { background: #fff; border-bottom: 1px solid #E5E7EB; padding: 0 32px; display: flex; gap: 0; }
+    .tab-btn { padding: 14px 22px; font-size: 13px; font-weight: 600; color: #6B7280; border: none; background: none; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -1px; transition: color .15s, border-color .15s; white-space: nowrap; }
+    .tab-btn:hover { color: #671f75; }
+    .tab-btn.active { color: #671f75; border-bottom-color: #671f75; }
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; }
+
+    /* ── Main ── */
+    main { max-width: 1400px; margin: 0 auto; padding: 24px 32px; }
+
+    /* ── Cards ── */
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; margin-bottom: 24px; }
+    .card { background: #fff; border-radius: 14px; padding: 18px 20px; box-shadow: 0 1px 4px rgba(0,0,0,.07); }
+    .card .label { font-size: 11px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 8px; }
+    .card .value { font-size: 26px; font-weight: 700; color: #671f75; }
+    .card .sub   { font-size: 11px; color: #9CA3AF; margin-top: 4px; }
+
+    /* ── Charts ── */
+    .charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+    .chart-card { background: #fff; border-radius: 14px; padding: 20px 22px; box-shadow: 0 1px 4px rgba(0,0,0,.07); }
+    .chart-card h3 { font-size: 13px; font-weight: 700; color: #374151; margin-bottom: 16px; }
+    .chart-card svg { display: block; width: 100%; overflow: visible; }
+    @media (max-width: 800px) { .charts-row { grid-template-columns: 1fr; } }
+    /* ── Period toggle ── */
+    .period-toggle { display: flex; gap: 4px; margin-bottom: 20px; }
+    .period-btn { padding: 5px 16px; border-radius: 20px; border: 1.5px solid #E5E7EB; background: #F9FAFB; font-size: 12px; font-weight: 600; color: #6B7280; cursor: pointer; transition: all .15s; }
+    .period-btn:hover { border-color: #8a2a9a; color: #671f75; }
+    .period-btn.active { background: #671f75; color: #fff; border-color: #671f75; }
+
+    /* ── Section wrap ── */
+    .section-wrap { background: #fff; border-radius: 14px; box-shadow: 0 1px 4px rgba(0,0,0,.07); overflow: hidden; margin-bottom: 20px; }
+    .section-hdr { padding: 16px 20px; border-bottom: 1px solid #F3F4F6; display: flex; justify-content: space-between; align-items: center; }
+    .section-hdr h2 { font-size: 15px; font-weight: 600; }
+    .section-hdr span { font-size: 12px; color: #9CA3AF; }
+
+    /* ── Generic table ── */
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th { background: #F9FAFB; padding: 10px 14px; text-align: left; font-size: 11px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: .05em; border-bottom: 1px solid #F3F4F6; white-space: nowrap; }
+    td { padding: 11px 14px; border-bottom: 1px solid #F9FAFB; vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #FAFAFA; }
+
+    /* ── Badges / Pills ── */
+    .badge { display: inline-block; background: #F3E8FF; color: #671f75; border-radius: 6px; padding: 2px 8px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+    .badge.tool { background: #EFF6FF; color: #1D4ED8; }
+    .pill { display: inline-block; border-radius: 20px; padding: 2px 9px; font-size: 11px; font-weight: 600; }
+    .pill.purple { background: #F3E8FF; color: #671f75; }
+    .pill.red    { background: #FEE2E2; color: #DC2626; }
+    .pill.orange { background: #FEF3C7; color: #92400E; }
+    .pill.gray   { background: #F3F4F6; color: #6B7280; }
+    .cost { font-weight: 600; color: #059669; }
+    .empty { text-align: center; padding: 50px 20px; color: #9CA3AF; font-size: 14px; }
+
+    /* ── Top 10 ── */
+    /* ── Top 10 grouped ── */
+    .topic-card { border-bottom: 1px solid #F3F4F6; }
+    .topic-card:last-child { border-bottom: none; }
+    .topic-hdr { padding: 14px 20px; display: flex; align-items: center; gap: 12px; cursor: pointer; user-select: none; }
+    .topic-hdr:hover { background: #FAFAFA; }
+    .topic-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; }
+    .topic-info { flex: 1; }
+    .topic-name { font-size: 14px; font-weight: 700; color: #111827; }
+    .topic-meta { display: flex; gap: 8px; margin-top: 3px; flex-wrap: wrap; align-items: center; }
+    .topic-chevron { font-size: 11px; color: #9CA3AF; transition: transform .2s; }
+    .topic-chevron.open { transform: rotate(90deg); }
+    .topic-detail { display: none; border-top: 1px solid #F9FAFB; }
+    .topic-detail.open { display: block; }
+    .topic-qa { padding: 11px 20px 11px 68px; border-bottom: 1px solid #F9FAFB; }
+    .topic-qa:last-child { border-bottom: none; }
+    .topic-qa-q { font-size: 12.5px; font-weight: 500; color: #374151; margin-bottom: 3px; }
+    .topic-qa-a { font-size: 11.5px; color: #6B7280; line-height: 1.5; }
+    .rank { width: 28px; height: 28px; border-radius: 50%; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .rank.gold   { background: #FEF3C7; color: #92400E; }
+    .rank.silver { background: #F3F4F6; color: #4B5563; }
+    .rank.bronze { background: #FEF0E7; color: #C2410C; }
+    .rank.default { background: #F3E8FF; color: #671f75; }
+
+    /* ── Alerts ── */
+    table.alerts-tbl th { background: #FFF7F7; border-bottom-color: #FEE2E2; }
+    table.alerts-tbl tr:hover td { background: #FFF7F7; }
+    table.alerts-tbl td { border-bottom-color: #FEF2F2; }
+    .alert-cell { max-width: 220px; font-size: 13px; line-height: 1.45; }
+    .alert-resp  { font-size: 12px; color: #6B7280; line-height: 1.45; }
+    table.alerts-tbl td:nth-child(3) { width: 40%; min-width: 280px; }
+    .kw-list { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; }
+
+    /* ── Interactions table ── */
+    .filters { background: #fff; border-radius: 14px; padding: 14px 18px; box-shadow: 0 1px 4px rgba(0,0,0,.07); margin-bottom: 16px; display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; }
+    .filters label { font-size: 11px; font-weight: 700; color: #6B7280; display: block; margin-bottom: 4px; text-transform: uppercase; letter-spacing: .04em; }
+    .filters input, .filters select { border: 1.5px solid #E5E7EB; border-radius: 8px; padding: 6px 11px; font-size: 13px; outline: none; background: #F9FAFB; }
+    .filters input:focus, .filters select:focus { border-color: #8a2a9a; background: #fff; }
+    .filters input[type=text] { min-width: 200px; }
+    .btn-secondary { background: #F3F4F6; border: 1.5px solid #E5E7EB; border-radius: 8px; padding: 6px 14px; font-size: 13px; cursor: pointer; color: #374151; font-weight: 600; }
+    .btn-secondary:hover { background: #E5E7EB; }
+    .expand-btn { background: none; border: none; cursor: pointer; color: #671f75; font-size: 11px; font-weight: 600; padding: 2px 6px; border-radius: 4px; }
+    .expand-btn:hover { background: #F3E8FF; }
+    .response-row td { background: #F9FAFB; padding: 10px 14px 14px !important; }
+    .response-box { background: #fff; border: 1px solid #E5E7EB; border-radius: 8px; padding: 10px 14px; max-height: 180px; overflow-y: auto; font-size: 12px; line-height: 1.55; white-space: pre-wrap; word-break: break-word; color: #374151; }
+
+    @media (max-width: 700px) {
+      main { padding: 14px; }
+      #config-bar { padding: 10px 14px; }
+      header { padding: 14px; }
+      .tab-nav { padding: 0 14px; overflow-x: auto; }
+      .tab-btn { padding: 12px 14px; font-size: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Login screen ─────────────────────────────────────────────────────── -->
+<div id="login-screen">
+  <div class="login-box">
+    <svg viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="6" width="18" height="13" rx="2.5" stroke="#671f75" stroke-width="1.6"/>
+      <circle cx="8.5" cy="12.5" r="1.5" fill="#671f75"/>
+      <circle cx="15.5" cy="12.5" r="1.5" fill="#671f75"/>
+      <path d="M8.5 12.5 Q12 15.5 15.5 12.5" stroke="#671f75" stroke-width="1.4" stroke-linecap="round"/>
+      <path d="M9 6 V4" stroke="#671f75" stroke-width="1.6" stroke-linecap="round"/>
+      <path d="M15 6 V4" stroke="#671f75" stroke-width="1.6" stroke-linecap="round"/>
+      <circle cx="9" cy="3.5" r="1" fill="#671f75"/>
+      <circle cx="15" cy="3.5" r="1" fill="#671f75"/>
+    </svg>
+    <h2>M1 Agent Analytics</h2>
+    <p>Ingresa la contraseña para continuar</p>
+    <input id="login-pass" type="password" placeholder="Contraseña" onkeydown="if(event.key==='Enter')doLogin()" />
+    <button onclick="doLogin()">Entrar</button>
+    <div class="login-error" id="login-error"></div>
+  </div>
+</div>
+
+<header>
+  <svg viewBox="0 0 24 24" fill="none">
+    <rect x="3" y="6" width="18" height="13" rx="2.5" stroke="white" stroke-width="1.6"/>
+    <circle cx="8.5" cy="12.5" r="1.5" fill="white"/>
+    <circle cx="15.5" cy="12.5" r="1.5" fill="white"/>
+    <path d="M8.5 12.5 Q12 15.5 15.5 12.5" stroke="white" stroke-width="1.4" stroke-linecap="round"/>
+    <path d="M9 6 V4" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M15 6 V4" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
+    <circle cx="9" cy="3.5" r="1" fill="white"/>
+    <circle cx="15" cy="3.5" r="1" fill="white"/>
+  </svg>
+  <div>
+    <h1>Asistente IA MoradaUno — Analytics</h1>
+    <p>Monitoreo de uso, tokens y costos</p>
+  </div>
+</header>
+
+<div id="config-bar">
+  <label>Worker URL</label>
+  <input id="in-url" type="text" value="https://delicate-poetry-a88a.ines-25d.workers.dev" placeholder="https://tu-worker.workers.dev" />
+  <button id="btn-load">Cargar datos</button>
+  <span id="load-status"></span>
+</div>
+
+<!-- Tab navigation -->
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab('analytics')">Analytics</button>
+  <button class="tab-btn" onclick="switchTab('top10')">Top 10 Preguntas</button>
+  <button class="tab-btn" onclick="switchTab('alerts')">🚨 Alertas</button>
+  <button class="tab-btn" onclick="switchTab('mejoras')">👎 Mejoras</button>
+  <button class="tab-btn" onclick="switchTab('log')">Registro</button>
+</div>
+
+<main>
+
+  <!-- ── TAB 1: ANALYTICS ─────────────────────────────────────────────────── -->
+  <div class="tab-pane active" id="tab-analytics">
+
+    <div class="cards">
+      <div class="card">
+        <div class="label">Costo total</div>
+        <div class="value" id="c-cost">—</div>
+        <div class="sub" id="c-cost-sub">USD</div>
+      </div>
+      <div class="card">
+        <div class="label">Tokens totales</div>
+        <div class="value" id="c-tokens">—</div>
+        <div class="sub" id="c-tokens-sub">input + output</div>
+      </div>
+      <div class="card">
+        <div class="label">Brokers únicos</div>
+        <div class="value" id="c-users">—</div>
+        <div class="sub">emails / nombres distintos</div>
+      </div>
+      <div class="card">
+        <div class="label">Preguntas totales</div>
+        <div class="value" id="c-queries">—</div>
+        <div class="sub" id="c-queries-sub">sesiones</div>
+      </div>
+      <div class="card">
+        <div class="label">Satisfacción</div>
+        <div class="value" id="c-sat">—</div>
+        <div class="sub" id="c-sat-sub">respuestas calificadas</div>
+      </div>
+      <div class="card">
+        <div class="label">Errores de API</div>
+        <div class="value" id="c-errors" style="color:#DC2626">—</div>
+        <div class="sub" id="c-errors-sub">rate limit / saturación</div>
+      </div>
+    </div>
+
+    <div class="period-toggle">
+      <button class="period-btn" onclick="setPeriod('day')">Día</button>
+      <button class="period-btn active" onclick="setPeriod('week')">Semana</button>
+      <button class="period-btn" onclick="setPeriod('month')">Mes</button>
+    </div>
+
+    <div class="charts-row">
+      <div class="chart-card">
+        <h3 id="chart-interactions-title">Interacciones por día</h3>
+        <div id="chart-interactions"></div>
+      </div>
+      <div class="chart-card">
+        <h3 id="chart-brokers-title">Brokers únicos por día</h3>
+        <div id="chart-brokers"></div>
+      </div>
+    </div>
+    <div class="charts-row" style="grid-template-columns:1fr;">
+      <div class="chart-card">
+        <h3 id="chart-sat-title">Satisfacción por período (% 👍)</h3>
+        <div id="chart-sat"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── TAB 2: TOP 10 ────────────────────────────────────────────────────── -->
+  <div class="tab-pane" id="tab-top10">
+    <div class="section-wrap">
+      <div class="section-hdr">
+        <h2>🔥 Top 10 preguntas — últimos 5 días</h2>
+        <span id="top10-range"></span>
+      </div>
+      <div id="top10-body"><div class="empty">Cargando preguntas frecuentes…</div></div>
+    </div>
+  </div>
+
+  <!-- ── TAB 3: ALERTAS ───────────────────────────────────────────────────── -->
+  <div class="tab-pane" id="tab-alerts">
+    <div class="section-wrap">
+      <div class="section-hdr">
+        <h2>🚨 Brokers con fricción</h2>
+        <span id="alerts-count"></span>
+      </div>
+      <div id="alerts-body"><div class="empty">Carga los datos para ver alertas.</div></div>
+    </div>
+  </div>
+
+  <!-- ── TAB 4: MEJORAS ───────────────────────────────────────────────────── -->
+  <div class="tab-pane" id="tab-mejoras">
+    <div class="section-wrap">
+      <div class="section-hdr">
+        <h2>👎 Respuestas que no ayudaron</h2>
+        <span id="mejoras-count"></span>
+      </div>
+      <div id="mejoras-body"><div class="empty">Carga los datos para ver las respuestas con thumbs down.</div></div>
+    </div>
+  </div>
+
+  <!-- ── TAB 5: REGISTRO ──────────────────────────────────────────────────── -->
+  <div class="tab-pane" id="tab-log">
+
+    <div class="filters">
+      <div>
+        <label>Buscar</label>
+        <input id="f-search" type="text" placeholder="Pregunta, broker..." oninput="renderTable()" />
+      </div>
+      <div>
+        <label>Broker</label>
+        <select id="f-broker" onchange="renderTable()"><option value="">Todos</option></select>
+      </div>
+      <div>
+        <label>Desde</label>
+        <input id="f-from" type="date" onchange="renderTable()" />
+      </div>
+      <div>
+        <label>Hasta</label>
+        <input id="f-to" type="date" onchange="renderTable()" />
+      </div>
+      <button class="btn-secondary" onclick="clearFilters()">Limpiar</button>
+      <button class="btn-secondary" onclick="exportCSV()">⬇ CSV</button>
+    </div>
+
+    <div class="section-wrap">
+      <div class="section-hdr">
+        <h2>Registro de interacciones</h2>
+        <span id="row-count"></span>
+      </div>
+      <div id="table-body"><div class="empty">Carga los datos para ver el registro.</div></div>
+    </div>
+
+  </div>
+
+</main>
+
+<script>
+  // ── Config (edit these before deploying) ───────────────────────────────────
+  const WORKER_URL    = 'https://delicate-poetry-a88a.ines-25d.workers.dev';
+  const DASHBOARD_PWD = 'morada2026'; // change this to your preferred password
+
+  // ── Login ──────────────────────────────────────────────────────────────────
+  function doLogin() {
+    const pass = document.getElementById('login-pass').value;
+    if (pass === DASHBOARD_PWD) {
+      document.getElementById('login-screen').style.display = 'none';
+      // Pre-fill worker URL and auto-load
+      const urlInput = document.getElementById('in-url');
+      if (urlInput) urlInput.value = WORKER_URL;
+      loadData();
+    } else {
+      document.getElementById('login-error').textContent = 'Contraseña incorrecta';
+      document.getElementById('login-pass').value = '';
+    }
+  }
+
+  let allLogs = [];
+
+  // ── Tabs ───────────────────────────────────────────────────────────────────
+  function switchTab(name) {
+    const names = ['analytics','top10','alerts','mejoras','log'];
+    document.querySelectorAll('.tab-btn').forEach((b, i) => {
+      b.classList.toggle('active', names[i] === name);
+    });
+    document.querySelectorAll('.tab-pane').forEach(p => {
+      p.classList.toggle('active', p.id === 'tab-' + name);
+    });
+  }
+
+  // ── Load data ──────────────────────────────────────────────────────────────
+  document.getElementById('btn-load').addEventListener('click', loadData);
+
+  // Auto-load whenever the page finishes loading (no button click needed)
+  window.addEventListener('load', () => {
+    // If login screen is visible, it will call loadData after password entry.
+    // If there's no login screen (or it's already hidden), load immediately.
+    const loginScreen = document.getElementById('login-screen');
+    if (!loginScreen || loginScreen.style.display === 'none') loadData();
+  });
+
+  async function loadData() {
+    const url    = (document.getElementById('in-url').value || WORKER_URL).trim().replace(/\/$/, '');
+    const status = document.getElementById('load-status');
+    if (!url) { status.textContent = '⚠ Ingresa la Worker URL'; return; }
+    status.textContent = '⏳ Cargando…';
+    try {
+      const res = await fetch(`${url}/analytics`);
+      if (!res.ok) {
+        status.textContent = `❌ Error ${res.status} — verifica que el Worker esté activo`;
+        return;
+      }
+      const data = await res.json();
+      if (!Array.isArray(data)) {
+        status.textContent = '❌ Respuesta inesperada del Worker';
+        return;
+      }
+      allLogs = data;
+      const ts = new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
+      status.textContent = allLogs.length
+        ? `✓ ${allLogs.length} registros · actualizado ${ts}`
+        : `⚠ 0 registros — ¿ya se configuró el KV namespace en Cloudflare?`;
+      populateBrokerFilter();
+      updateCards(allLogs);
+      renderCharts();
+      renderTop10();
+      renderAlerts();
+      renderMejoras();
+      renderTable();
+    } catch (e) {
+      status.textContent = `❌ No se pudo conectar al Worker: ${e.message}`;
+    }
+  }
+
+  // ── Cards ──────────────────────────────────────────────────────────────────
+  function updateCards(logs) {
+    const totalCost   = logs.reduce((s, l) => s + (l.cost_usd || 0), 0);
+    const totalInput  = logs.reduce((s, l) => s + (l.input_tokens || 0), 0);
+    const totalOutput = logs.reduce((s, l) => s + (l.output_tokens || 0), 0);
+    const uniqueUsers = new Set(logs.map(l => l.broker_email || l.broker_name).filter(Boolean)).size;
+    const uniqueSess  = new Set(logs.map(l => l.session_id).filter(Boolean)).size;
+
+    document.getElementById('c-cost').textContent      = `$${totalCost.toFixed(4)}`;
+    document.getElementById('c-cost-sub').textContent  = `USD · $${(totalCost * 20).toFixed(2)} MXN aprox.`;
+    document.getElementById('c-tokens').textContent    = fmtNum(totalInput + totalOutput);
+    document.getElementById('c-tokens-sub').textContent = `↑ ${fmtNum(totalInput)} in · ↓ ${fmtNum(totalOutput)} out`;
+    document.getElementById('c-users').textContent     = uniqueUsers;
+    document.getElementById('c-queries').textContent   = logs.length;
+    document.getElementById('c-queries-sub').textContent = `${uniqueSess} sesiones`;
+
+    const rated    = logs.filter(l => l.rating !== null && l.rating !== undefined);
+    const positive = rated.filter(l => l.rating === 1).length;
+    const satPct   = rated.length ? Math.round((positive / rated.length) * 100) : null;
+    document.getElementById('c-sat').textContent     = satPct !== null ? `${satPct}%` : '—';
+    document.getElementById('c-sat-sub').textContent = rated.length
+      ? `👍 ${positive}  👎 ${rated.length - positive} · ${rated.length} calificadas`
+      : 'Sin calificaciones aún';
+
+    const errors     = logs.filter(l => l.error_type);
+    const rateLimits = errors.filter(l => l.error_type === 'rate_limit').length;
+    const overloaded = errors.filter(l => l.error_type === 'overloaded').length;
+    document.getElementById('c-errors').textContent     = errors.length || '0';
+    document.getElementById('c-errors-sub').textContent = errors.length
+      ? `⏳ ${rateLimits} rate limit · ❌ ${overloaded} saturación`
+      : 'Sin errores registrados';
+  }
+
+  // ── Charts ─────────────────────────────────────────────────────────────────
+  let currentPeriod = 'week';
+
+  function setPeriod(p) {
+    currentPeriod = p;
+    document.querySelectorAll('.period-btn').forEach(b => {
+      b.classList.toggle('active', b.textContent.trim().toLowerCase() === ({ day:'día', week:'semana', month:'mes' }[p]));
+    });
+    renderCharts();
+  }
+
+  function getBucketKey(isoTimestamp, period) {
+    const d = new Date(isoTimestamp);
+    if (period === 'month') return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+    if (period === 'week') {
+      // Monday-based ISO week start
+      const day = d.getDay() || 7;
+      const mon = new Date(d); mon.setDate(d.getDate() - day + 1);
+      return mon.toISOString().slice(0, 10);
+    }
+    return d.toISOString().slice(0, 10);
+  }
+
+  function bucketLabel(key, period) {
+    if (period === 'month') { const [y,m] = key.split('-'); return `${['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'][+m-1]} ${y.slice(2)}`; }
+    if (period === 'week')  { const d = new Date(key); return `${d.getDate()}/${d.getMonth()+1}`; }
+    const d = new Date(key); return `${d.getDate()}/${d.getMonth()+1}`;
+  }
+
+  function renderCharts() {
+    const labels = { day: 'por día', week: 'por semana', month: 'por mes' };
+    document.getElementById('chart-interactions-title').textContent = `Interacciones ${labels[currentPeriod]}`;
+    document.getElementById('chart-brokers-title').textContent      = `Brokers únicos ${labels[currentPeriod]}`;
+    document.getElementById('chart-sat-title').textContent          = `Satisfacción ${labels[currentPeriod]} (% 👍)`;
+
+    const byBucket = {};
+    allLogs.forEach(l => {
+      if (!l.timestamp) return;
+      const key = getBucketKey(l.timestamp, currentPeriod);
+      if (!byBucket[key]) byBucket[key] = { count: 0, brokers: new Set(), pos: 0, neg: 0 };
+      byBucket[key].count++;
+      if (l.broker_email || l.broker_name) byBucket[key].brokers.add(l.broker_email || l.broker_name);
+      if (l.rating === 1)  byBucket[key].pos++;
+      if (l.rating === -1) byBucket[key].neg++;
+    });
+
+    const keys    = Object.keys(byBucket).sort();
+    if (!keys.length) return;
+    const display = keys.map(k => bucketLabel(k, currentPeriod));
+    const counts  = keys.map(k => byBucket[k].count);
+    const brokers = keys.map(k => byBucket[k].brokers.size);
+    const satPcts = keys.map(k => {
+      const b = byBucket[k];
+      const total = b.pos + b.neg;
+      return total > 0 ? Math.round((b.pos / total) * 100) : null;
+    });
+
+    document.getElementById('chart-interactions').innerHTML = barChart(display, counts, '#671f75');
+    document.getElementById('chart-brokers').innerHTML      = barChart(display, brokers, '#059669');
+    document.getElementById('chart-sat').innerHTML          = satLineChart(display, satPcts);
+  }
+
+  function satLineChart(labels, values) {
+    // Only render if there's at least one rated period
+    if (values.every(v => v === null)) {
+      return '<div style="text-align:center;padding:40px 0;color:#9CA3AF;font-size:13px">Sin calificaciones aún — los brokers verán 👍/👎 después de cada respuesta</div>';
+    }
+    const W = 900, H = 160, pad = { top: 14, right: 14, bottom: 36, left: 40 };
+    const iW = W - pad.left - pad.right;
+    const iH = H - pad.top - pad.bottom;
+    const n  = labels.length;
+    const step = iW / Math.max(n - 1, 1);
+
+    // Gridlines at 0, 25, 50, 75, 100
+    let grid = '', yLbls = '';
+    [0,25,50,75,100].forEach(v => {
+      const y = pad.top + iH - (iH * v / 100);
+      grid  += `<line x1="${pad.left}" y1="${y}" x2="${W-pad.right}" y2="${y}" stroke="${v===50?'#E5E7EB':'#F3F4F6'}" stroke-width="${v===50?1.5:1}" stroke-dasharray="${v===50?'4,3':''}"/>`;
+      yLbls += `<text x="${pad.left-5}" y="${y+4}" font-size="10" fill="#9CA3AF" text-anchor="end">${v}%</text>`;
+    });
+
+    // Line path + dots
+    const pts = values.map((v, i) => {
+      if (v === null) return null;
+      return { x: pad.left + step * i, y: pad.top + iH - (iH * v / 100), v };
+    });
+
+    // Build path segments (skip nulls)
+    let path = '', dots = '', xLbls = '';
+    let pathStarted = false;
+    pts.forEach((p, i) => {
+      if (p) {
+        path += pathStarted ? ` L${p.x.toFixed(1)},${p.y.toFixed(1)}` : `M${p.x.toFixed(1)},${p.y.toFixed(1)}`;
+        pathStarted = true;
+        const col = p.v >= 70 ? '#059669' : p.v >= 50 ? '#D97706' : '#DC2626';
+        dots += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="5" fill="${col}" stroke="#fff" stroke-width="2"><title>${labels[i]}: ${p.v}%</title></circle>`;
+        dots += `<text x="${p.x.toFixed(1)}" y="${(p.y-10).toFixed(1)}" font-size="10" fill="${col}" text-anchor="middle" font-weight="600">${p.v}%</text>`;
+      } else { pathStarted = false; }
+      if (n <= 14 || i % Math.ceil(n/10) === 0 || i === n-1) {
+        xLbls += `<text x="${(pad.left + step*i).toFixed(1)}" y="${H-6}" font-size="9.5" fill="#9CA3AF" text-anchor="middle">${labels[i]}</text>`;
+      }
+    });
+
+    return `<svg viewBox="0 0 ${W} ${H}" style="height:160px">
+      ${grid}${yLbls}
+      <path d="${path}" fill="none" stroke="#671f75" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" opacity="0.4"/>
+      ${dots}${xLbls}
+    </svg>`;
+  }
+
+  function barChart(labels, values, color) {
+    const W = 560, H = 160, pad = { top: 10, right: 10, bottom: 36, left: 32 };
+    const iW = W - pad.left - pad.right;
+    const iH = H - pad.top - pad.bottom;
+    const max = Math.max(...values, 1);
+    const n   = labels.length;
+    const barW = Math.max(4, Math.min(36, iW / n - 4));
+    const step = iW / n;
+
+    // Y gridlines
+    const ticks = 4;
+    let gridLines = '';
+    let yLabels = '';
+    for (let i = 0; i <= ticks; i++) {
+      const y = pad.top + iH - (iH * i / ticks);
+      const v = Math.round(max * i / ticks);
+      gridLines += `<line x1="${pad.left}" y1="${y}" x2="${W - pad.right}" y2="${y}" stroke="#F3F4F6" stroke-width="1"/>`;
+      yLabels   += `<text x="${pad.left - 5}" y="${y + 4}" font-size="10" fill="#9CA3AF" text-anchor="end">${v}</text>`;
+    }
+
+    // Bars
+    let bars = '', xLabels = '';
+    labels.forEach((label, i) => {
+      const bH  = Math.max(2, (values[i] / max) * iH);
+      const x   = pad.left + step * i + (step - barW) / 2;
+      const y   = pad.top + iH - bH;
+      bars     += `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${barW}" height="${bH.toFixed(1)}" rx="3" fill="${color}" opacity="0.85">
+        <title>${label}: ${values[i]}</title></rect>`;
+      // Show every Nth label to avoid crowding
+      if (n <= 14 || i % Math.ceil(n / 10) === 0 || i === n - 1) {
+        const lx = pad.left + step * i + step / 2;
+        const d  = label.slice(5); // MM-DD
+        xLabels += `<text x="${lx.toFixed(1)}" y="${H - 6}" font-size="9.5" fill="#9CA3AF" text-anchor="middle">${d}</text>`;
+      }
+    });
+
+    return `<svg viewBox="0 0 ${W} ${H}" style="height:160px">
+      ${gridLines}${yLabels}${bars}${xLabels}
+    </svg>`;
+  }
+
+  // ── Top 10 ─────────────────────────────────────────────────────────────────
+  // ── Topic classification ───────────────────────────────────────────────────
+  const TOPICS = [
+    { key: 'investigacion', label: 'Investigación',     icon: '🔍', color: '#EFF6FF', kw: ['investigaci','investiga','perfil','aprobad','rechazad','pendiente','candidato','resultado','dictamen'] },
+    { key: 'contratos',     label: 'Contratos',         icon: '📄', color: '#F0FDF4', kw: ['contrato','contract','clausula','cláusula','revisión','revisar','cambio','modificar','legal'] },
+    { key: 'firma',         liga: 'Firma',              label: 'Firma',              icon: '✍️', color: '#FFF7ED', kw: ['firma','firmar','firmas','agenda','cita','notario','abogado','electrónica','electronica'] },
+    { key: 'pagos',         label: 'Pagos',             icon: '💳', color: '#F0FDF4', kw: ['pago','pagar','pagó','cobro','cobrar','transferencia','liga de pago','cuánto','cuanto','deposito','depósito'] },
+    { key: 'renovacion',    label: 'Renovaciones',      icon: '🔄', color: '#FDF4FF', kw: ['renovaci','vencer','vencimiento','renovar','próxim','proxim'] },
+    { key: 'cotizacion',    label: 'Cotización',        icon: '💰', color: '#FFFBEB', kw: ['cotiz','protección','proteccion','plan','mlegal','m3 ','m6 ','m12','precio','costo','mensual','anual'] },
+    { key: 'nueva_renta',   label: 'Registro de renta', icon: '🏠', color: '#F0F9FF', kw: ['registrar','nueva renta','nuevo registro','registr','inquilino nuevo','nueva protecci','solo investigaci'] },
+    { key: 'documentos',    label: 'Documentos',        icon: '📁', color: '#FFF1F2', kw: ['documento','subir','cargar','requisito','comprobante','estado de cuenta','identificaci','escritura','nómina','nomina','pdf'] },
+    { key: 'estatus',       label: 'Estatus de operación', icon: '📊', color: '#F8FAFC', kw: ['estatus','status','cómo va','como va','en qué','en que','operación','operacion','detalle','renta '] },
+    { key: 'portal',        label: 'Portal de inquilino / propietario', icon: '🔗', color: '#F5F3FF', kw: ['portal','liga','link','compartir','inquilino ','propietario '] },
+    { key: 'otros',         label: 'Otros',             icon: '💬', color: '#F9FAFB', kw: [] },
+  ];
+
+  const NOISE = [
+    /^(si|no|sí|ok|okay|okey|claro|gracias|dale|listo|entendido|perfecto|bien|bueno|va|ahí|sale|👍|✓|sip|nop)[\s.!]*$/i,
+    /^\d{4,}$/,                        // pure transaction/deal ID numbers
+    /^[\d\s\-\/,.]+$/,                 // mostly numbers
+    /^[A-ZÁÉÍÓÚ][a-záéíóú]+(\s[A-ZÁÉÍÓÚ][a-záéíóú]+){1,4}$/,  // likely a person name
+    /^(av\.|avenida|calle|blvd|boulevard|privada|periferico|calz|eje)\s/i, // address
+    /\b\d{4,}\b.*\b(depto|int|piso|col\.|colonia)\b/i,   // address with apt
+  ];
+
+  function isNoise(q) {
+    if (!q || q.trim().length < 8) return true;
+    return NOISE.some(r => r.test(q.trim()));
+  }
+
+  function classifyTopic(q) {
+    const lower = q.toLowerCase();
+    for (const t of TOPICS.slice(0, -1)) {
+      if (t.kw.some(k => lower.includes(k))) return t.key;
+    }
+    return 'otros';
+  }
+
+  function renderTop10() {
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - 5);
+    cutoff.setHours(0, 0, 0, 0);
+    const recent = allLogs.filter(l => l.timestamp && new Date(l.timestamp) >= cutoff);
+
+    const fromLabel = cutoff.toLocaleDateString('es-MX', { day: '2-digit', month: 'short' });
+    const toLabel   = new Date().toLocaleDateString('es-MX', { day: '2-digit', month: 'short' });
+
+    // Filter out noise
+    const valid = recent.filter(l => l.question && !isNoise(l.question));
+    document.getElementById('top10-range').textContent =
+      `${fromLabel} – ${toLabel} · ${valid.length} preguntas reales de ${recent.length} total`;
+
+    if (!valid.length) {
+      const msg = allLogs.length === 0
+        ? '⚠️ Sin datos — verifica que el KV namespace esté configurado en el Worker de Cloudflare.'
+        : 'No hay preguntas reales en los últimos 5 días.';
+      document.getElementById('top10-body').innerHTML = `<div class="empty">${msg}</div>`;
+      return;
+    }
+
+    // Group by topic
+    const groups = {};
+    valid.forEach(l => {
+      const tk = classifyTopic(l.question);
+      if (!groups[tk]) groups[tk] = [];
+      groups[tk].push(l);
+    });
+
+    // Sort topics by count desc, take top 10
+    const sorted = Object.entries(groups)
+      .sort((a, b) => b[1].length - a[1].length)
+      .slice(0, 10);
+
+    const rankClass = i => ['gold','silver','bronze'][i] || 'default';
+
+    document.getElementById('top10-body').innerHTML = sorted.map(([tk, logs], i) => {
+      const topic   = TOPICS.find(t => t.key === tk) || TOPICS.at(-1);
+      const unique  = [...new Set(logs.map(l => l.broker_email || l.broker_name).filter(Boolean))].length;
+
+      // Deduplicate questions within the group (keep most recent)
+      const seen = {}, qaList = [];
+      [...logs].sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp)).forEach(l => {
+        const nk = l.question.trim().toLowerCase().slice(0, 80);
+        if (!seen[nk]) { seen[nk] = true; qaList.push(l); }
+      });
+
+      const detailId = `topic-detail-${i}`;
+      const chevId   = `chev-${i}`;
+
+      return `
+        <div class="topic-card">
+          <div class="topic-hdr" onclick="toggleTopic('${detailId}','${chevId}')">
+            <div class="topic-icon" style="background:${topic.color}">${topic.icon}</div>
+            <div class="topic-info">
+              <div class="topic-name">${topic.label}</div>
+              <div class="topic-meta">
+                <span class="pill purple">🔁 ${logs.length} pregunta${logs.length !== 1 ? 's' : ''}</span>
+                <span class="pill gray">👥 ${unique} broker${unique !== 1 ? 's' : ''}</span>
+                ${(() => { const r = logs.filter(l => l.rating != null); const p = r.filter(l => l.rating === 1).length; return r.length ? `<span class="pill ${p/r.length >= .7 ? 'purple' : 'orange'}">${Math.round(p/r.length*100)}% 👍</span>` : ''; })()}
+                <span class="rank ${rankClass(i)}" style="width:22px;height:22px;font-size:10px">${i + 1}</span>
+              </div>
+            </div>
+            <span class="topic-chevron" id="${chevId}">▶</span>
+          </div>
+          <div class="topic-detail" id="${detailId}">
+            ${qaList.slice(0, 8).map(l => `
+              <div class="topic-qa">
+                <div class="topic-qa-q">💬 ${esc(l.question)}</div>
+                ${l.response_preview
+                  ? `<div class="topic-qa-a">🤖 ${esc(l.response_preview.slice(0, 200))}${l.response_preview.length > 200 ? '…' : ''}</div>`
+                  : ''}
+              </div>`).join('')}
+            ${qaList.length > 8 ? `<div style="padding:8px 20px 12px 68px;font-size:11px;color:#9CA3AF">+${qaList.length - 8} más…</div>` : ''}
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  function toggleTopic(detailId, chevId) {
+    const d = document.getElementById(detailId);
+    const c = document.getElementById(chevId);
+    if (!d) return;
+    const open = d.classList.toggle('open');
+    if (c) c.classList.toggle('open', open);
+  }
+
+  // ── Alerts ─────────────────────────────────────────────────────────────────
+  const FRUSTRATION_KW = [
+    'error','mal','otra vez','no sirve','no puedo','no funciona','no me','no jala',
+    'falla','fallando','incorrecto','equivocado','no entiendo','no sabe','mentira',
+    'siempre','nunca','horrible','pésimo','pesimo','terrible','malo','mala',
+    'no carga','tarda','lento','wtf','dios mio','qué onda','que onda',
+    'por qué','por que','no puede ser','en serio','otra vez lo mismo',
+    'urge','urgente','urgent','urgentemente',
+  ];
+
+  function getFrustrationKeywords(l) {
+    const text = ((l.question || '') + ' ' + (l.response_preview || '')).toLowerCase();
+    return FRUSTRATION_KW.filter(k => text.includes(k));
+  }
+  function isFrustrated(l) { return getFrustrationKeywords(l).length > 0; }
+
+  function renderAlerts() {
+    const flagged = allLogs
+      .map(l => ({ l, kw: getFrustrationKeywords(l) }))
+      .filter(x => x.kw.length > 0)
+      .sort((a, b) => new Date(b.l.timestamp) - new Date(a.l.timestamp))
+      .slice(0, 50);
+
+    const apiErrors = allLogs
+      .filter(l => l.error_type)
+      .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+      .slice(0, 30);
+
+    const totalAlerts = flagged.length + apiErrors.length;
+    document.getElementById('alerts-count').textContent = totalAlerts
+      ? `${totalAlerts} alertas`
+      : 'Sin alertas';
+
+    let html = '';
+
+    // ── API Error section ────────────────────────────────────────────────────
+    if (apiErrors.length > 0) {
+      const rlCount  = apiErrors.filter(l => l.error_type === 'rate_limit').length;
+      const ovCount  = apiErrors.filter(l => l.error_type === 'overloaded').length;
+      html += `
+        <div style="padding:14px 20px 6px;border-bottom:1px solid #F3F4F6">
+          <div style="font-size:12px;font-weight:700;color:#DC2626;margin-bottom:10px">
+            ❌ Errores de API — ${apiErrors.length} en total
+            &nbsp;<span style="font-weight:400;color:#9CA3AF">· ⏳ ${rlCount} rate limit · 💥 ${ovCount} saturación</span>
+          </div>
+          <table class="alerts-tbl">
+            <thead><tr><th>Asesor</th><th>Pregunta</th><th>Tipo de error</th><th>Fecha</th></tr></thead>
+            <tbody>
+              ${apiErrors.map(l => `<tr>
+                <td style="white-space:nowrap;min-width:100px">
+                  <div style="font-weight:600;font-size:12px">${esc(l.broker_name || '—')}</div>
+                  <div style="color:#9CA3AF;font-size:11px">${esc(l.broker_email || '')}</div>
+                </td>
+                <td><div class="alert-cell">${esc(l.question || '—')}</div></td>
+                <td style="min-width:130px">
+                  ${l.error_type === 'rate_limit'
+                    ? '<span class="pill orange">⏳ Rate limit</span>'
+                    : l.error_type === 'overloaded'
+                    ? '<span class="pill red">💥 Saturación</span>'
+                    : `<span class="pill gray">${esc(l.error_type)}</span>`}
+                </td>
+                <td style="white-space:nowrap;color:#9CA3AF;font-size:11px">${fmtDate(l.timestamp)}</td>
+              </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>`;
+    }
+
+    // ── Frustration section ──────────────────────────────────────────────────
+    if (!flagged.length && !apiErrors.length) {
+      const msg = allLogs.length === 0
+        ? '⚠️ Sin datos — verifica que el KV namespace esté configurado en el Worker de Cloudflare.'
+        : '✅ No se detectaron errores ni brokers con fricción.';
+      document.getElementById('alerts-body').innerHTML = `<div class="empty">${msg}</div>`;
+      return;
+    }
+
+    if (flagged.length > 0) {
+      html += `
+        <div style="padding:14px 20px 6px">
+          <div style="font-size:12px;font-weight:700;color:#D97706;margin-bottom:10px">
+            🟡 Fricción detectada — ${flagged.length} interacciones
+          </div>
+          <table class="alerts-tbl">
+            <thead><tr>
+              <th>Asesor</th><th>Pregunta</th><th>Respuesta de la IA</th><th>Motivo de alerta</th>
+            </tr></thead>
+            <tbody>
+              ${flagged.map(({ l, kw }) => {
+                const level = kw.length >= 3 ? 'red' : 'orange';
+                const icon  = kw.length >= 3 ? '🔴' : '🟡';
+                return `<tr>
+                  <td style="white-space:nowrap;min-width:110px">
+                    <div style="font-weight:600;font-size:12px">${esc(l.broker_name || '—')}</div>
+                    <div style="color:#9CA3AF;font-size:11px">${esc(l.broker_email || '')}</div>
+                    <div style="color:#9CA3AF;font-size:11px;margin-top:2px">${fmtDate(l.timestamp)}</div>
+                  </td>
+                  <td><div class="alert-cell">${esc(l.question || '—')}</div></td>
+                  <td><div class="alert-resp">${esc((l.response_preview || '—').slice(0, 280))}${(l.response_preview||'').length>280?'…':''}</div></td>
+                  <td style="min-width:150px">
+                    <span class="pill ${level}">${icon} ${kw.length} señal${kw.length>1?'es':''}</span>
+                    <div class="kw-list">${kw.map(k => `<span class="pill red">${esc(k)}</span>`).join('')}</div>
+                  </td>
+                </tr>`;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>`;
+    }
+
+    document.getElementById('alerts-body').innerHTML = html;
+  }
+
+  // ── Interactions table ─────────────────────────────────────────────────────
+  function populateBrokerFilter() {
+    const brokers = [...new Set(allLogs.map(l => l.broker_name || l.broker_email).filter(Boolean))].sort();
+    document.getElementById('f-broker').innerHTML =
+      '<option value="">Todos</option>' + brokers.map(b => `<option value="${esc(b)}">${esc(b)}</option>`).join('');
+  }
+
+  function getFiltered() {
+    const search = document.getElementById('f-search').value.toLowerCase();
+    const broker = document.getElementById('f-broker').value;
+    const from   = document.getElementById('f-from').value;
+    const to     = document.getElementById('f-to').value;
+    return allLogs.filter(l => {
+      if (broker && (l.broker_name || l.broker_email) !== broker) return false;
+      if (search && !(l.question || '').toLowerCase().includes(search) &&
+                    !(l.broker_name || '').toLowerCase().includes(search) &&
+                    !(l.broker_email || '').toLowerCase().includes(search)) return false;
+      if (from && l.timestamp < from) return false;
+      if (to   && l.timestamp > to + 'T23:59:59') return false;
+      return true;
+    });
+  }
+
+  function clearFilters() {
+    ['f-search','f-from','f-to'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('f-broker').value = '';
+    renderTable();
+  }
+
+  function renderTable() {
+    const filtered = getFiltered();
+    document.getElementById('row-count').textContent = `${filtered.length} resultado${filtered.length !== 1 ? 's' : ''}`;
+
+    if (!filtered.length) {
+      const msg = allLogs.length === 0
+        ? '⚠️ Sin datos todavía — asegúrate de que el KV namespace esté vinculado al Worker en Cloudflare y de que haya interacciones registradas.'
+        : 'No hay resultados para los filtros seleccionados.';
+      document.getElementById('table-body').innerHTML = `<div class="empty">${msg}</div>`;
+      return;
+    }
+
+    const rows = [...filtered].reverse();
+    document.getElementById('table-body').innerHTML = `
+      <table>
+        <thead><tr>
+          <th>Fecha / Hora</th><th>Asesor</th><th>Pregunta</th>
+          <th>Respuesta IA</th><th>Rating</th><th>Herramientas</th><th>Tokens</th><th>Costo USD</th><th>Deal ID</th>
+        </tr></thead>
+        <tbody>
+          ${rows.map((l, i) => {
+            const flagged = isFrustrated(l);
+            const hasResp = !!(l.response_preview || '').trim();
+            return `
+              <tr style="${flagged ? 'background:#FFF7F7' : ''}">
+                <td style="white-space:nowrap;color:#6B7280;font-size:12px">${fmtDate(l.timestamp)}</td>
+                <td style="min-width:110px">
+                  <div style="font-weight:600;font-size:12px">${esc(l.broker_name || '—')}</div>
+                  <div style="color:#9CA3AF;font-size:11px">${esc(l.broker_email || '')}</div>
+                </td>
+                <td>
+                  <div style="font-size:13px">${esc((l.question || '—').slice(0, 80))}${(l.question||'').length>80?'…':''}</div>
+                  ${flagged ? `<div style="color:#DC2626;font-size:10px;font-weight:600;margin-top:2px">⚠ ${esc(getFrustrationKeywords(l).join(', '))}</div>` : ''}
+                </td>
+                <td>${hasResp ? `<button class="expand-btn" onclick="toggleResp(${i})">▶ Ver</button>` : '<span style="color:#D1D5DB;font-size:12px">—</span>'}</td>
+                <td style="text-align:center;font-size:16px">${l.rating === 1 ? '👍' : l.rating === -1 ? '👎' : '<span style="color:#E5E7EB">—</span>'}</td>
+                <td>${(l.tools_used||'').split(',').filter(Boolean).map(t => `<span class="badge tool">${esc(t.trim())}</span>`).join(' ') || '<span style="color:#D1D5DB">—</span>'}</td>
+                <td style="text-align:right;font-size:12px">
+                  <span style="color:#671f75">${fmtNum(l.input_tokens||0)}</span><span style="color:#D1D5DB"> / </span><span style="color:#059669">${fmtNum(l.output_tokens||0)}</span>
+                </td>
+                <td style="text-align:right"><span class="cost">$${(l.cost_usd||0).toFixed(5)}</span></td>
+                <td style="color:#6B7280;font-size:12px">${esc(l.deal_id||'—')}</td>
+              </tr>
+              <tr class="response-row" id="resp-${i}" style="display:none">
+                <td colspan="8"><div class="response-box">${esc(l.response_preview||'')}</div></td>
+              </tr>`;
+          }).join('')}
+        </tbody>
+      </table>`;
+  }
+
+  function toggleResp(i) {
+    const row = document.getElementById(`resp-${i}`);
+    const btn = row?.previousElementSibling?.querySelector('.expand-btn');
+    if (!row || !btn) return;
+    const open = row.style.display !== 'none';
+    row.style.display = open ? 'none' : 'table-row';
+    btn.textContent   = open ? '▶ Ver' : '▼ Ocultar';
+  }
+
+  // ── CSV Export ─────────────────────────────────────────────────────────────
+  function exportCSV() {
+    const filtered = getFiltered();
+    if (!filtered.length) return;
+    const cols = ['timestamp','broker_name','broker_email','question','response_preview','tools_used','input_tokens','output_tokens','cost_usd','deal_id','session_id'];
+    const csv = [cols.join(','), ...filtered.map(l =>
+      cols.map(c => `"${String(l[c]??'').replace(/"/g,'""')}"`).join(',')
+    )].join('\n');
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob(['\ufeff'+csv], { type: 'text/csv;charset=utf-8;' }));
+    a.download = `m1-analytics-${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+  }
+
+  // ── Mejoras (thumbs down) ──────────────────────────────────────────────────
+  function renderMejoras() {
+    const thumbsDown = allLogs
+      .filter(l => l.rating === -1)
+      .sort((a, b) => new Date(b.rated_at || b.timestamp) - new Date(a.rated_at || a.timestamp));
+
+    document.getElementById('mejoras-count').textContent =
+      thumbsDown.length ? `${thumbsDown.length} respuesta${thumbsDown.length !== 1 ? 's' : ''} a mejorar` : 'Sin thumbs down';
+
+    if (!thumbsDown.length) {
+      document.getElementById('mejoras-body').innerHTML =
+        '<div class="empty">✅ Ninguna respuesta marcada como no útil todavía.</div>';
+      return;
+    }
+
+    document.getElementById('mejoras-body').innerHTML = `
+      <table>
+        <thead><tr>
+          <th>Fecha</th><th>Asesor</th><th>Pregunta del broker</th><th>Respuesta de la IA</th><th>Tema</th>
+        </tr></thead>
+        <tbody>
+          ${thumbsDown.map((l, i) => {
+            const topic = TOPICS.find(t => t.key === classifyTopic(l.question || '')) || TOPICS.at(-1);
+            const detId = `mej-resp-${i}`;
+            return `<tr style="background:#FFF7F7">
+              <td style="white-space:nowrap;color:#6B7280;font-size:12px;min-width:90px">${fmtDate(l.timestamp)}</td>
+              <td style="min-width:110px">
+                <div style="font-weight:600;font-size:12px">${esc(l.broker_name||'—')}</div>
+                <div style="color:#9CA3AF;font-size:11px">${esc(l.broker_email||'')}</div>
+              </td>
+              <td style="max-width:260px">
+                <div style="font-size:13px;font-weight:500">${esc((l.question||'—').slice(0,120))}${(l.question||'').length>120?'…':''}</div>
+              </td>
+              <td style="max-width:320px">
+                ${l.response_preview
+                  ? `<button class="expand-btn" onclick="toggleResp2('${detId}')">▶ Ver respuesta</button>
+                     <div id="${detId}" style="display:none;margin-top:6px;background:#fff;border:1px solid #FECACA;border-radius:8px;padding:8px 12px;font-size:12px;line-height:1.55;color:#374151;white-space:pre-wrap">${esc(l.response_preview)}</div>`
+                  : '<span style="color:#D1D5DB;font-size:12px">—</span>'}
+              </td>
+              <td><span class="pill" style="background:${topic.color};color:#374151">${topic.icon} ${topic.label}</span></td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>`;
+  }
+
+  function toggleResp2(id) {
+    const el  = document.getElementById(id);
+    const btn = el?.previousElementSibling;
+    if (!el || !btn) return;
+    const open = el.style.display !== 'none';
+    el.style.display  = open ? 'none' : 'block';
+    btn.textContent   = open ? '▶ Ver respuesta' : '▼ Ocultar';
+  }
+
+  // ── Helpers ────────────────────────────────────────────────────────────────
+  function fmtNum(n) {
+    if (n >= 1_000_000) return (n/1_000_000).toFixed(2)+'M';
+    if (n >= 1_000)     return (n/1_000).toFixed(1)+'k';
+    return String(n);
+  }
+  function fmtDate(iso) {
+    if (!iso) return '—';
+    const d = new Date(iso);
+    return d.toLocaleDateString('es-MX',{day:'2-digit',month:'2-digit',year:'2-digit'})+' '+
+           d.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
+  }
+  function esc(s) {
+    return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+</script>
+</body>
+</html>
