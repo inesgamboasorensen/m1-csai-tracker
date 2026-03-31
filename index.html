@@ -404,7 +404,11 @@
         status.textContent = '❌ Respuesta inesperada del Worker';
         return;
       }
-      allLogs = data;
+      const TEST_USERS = ['ines gamboa sorensen', 'moradauno - atención directa', 'moradauno - atencion directa'];
+      allLogs = data.filter(l => {
+        const name = (l.broker_name || l.broker_email || '').toLowerCase();
+        return !TEST_USERS.some(t => name.includes(t));
+      });
       const ts = new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
       status.textContent = allLogs.length
         ? `✓ ${allLogs.length} registros · actualizado ${ts}`
