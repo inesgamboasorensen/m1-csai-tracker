@@ -198,6 +198,7 @@
   <button class="tab-btn" onclick="switchTab('alerts')">🚨 Alertas</button>
   <button class="tab-btn" onclick="switchTab('mejoras')">👎 Mejoras</button>
   <button class="tab-btn" onclick="switchTab('log')">Registro</button>
+  <button class="tab-btn" onclick="switchTab('qa')">🤖 QA Supervisor</button>
 </div>
 
 <main>
@@ -342,7 +343,68 @@
 
   </div>
 
+  <!-- ── TAB 6: QA SUPERVISOR ─────────────────────────────────────────────── -->
+  <div class="tab-pane" id="tab-qa">
+    <div class="section-wrap" style="margin-bottom:20px">
+      <div class="section-hdr">
+        <h2>🤖 QA Supervisor — Evaluación automática de respuestas</h2>
+        <span id="qa-status-hdr"></span>
+      </div>
+      <div style="padding:16px 20px;border-bottom:1px solid #F3F4F6;display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+        <label style="font-size:13px;color:#6B7280">Evaluar últimas</label>
+        <select id="qa-sample" style="border:1.5px solid #E5E7EB;border-radius:8px;padding:5px 10px;font-size:13px">
+          <option value="10">10 conversaciones</option>
+          <option value="20" selected>20 conversaciones</option>
+          <option value="50">50 conversaciones</option>
+        </select>
+        <button id="btn-qa-run" onclick="runQA()" style="background:linear-gradient(135deg,#671f75,#8a2a9a);color:#fff;border:none;border-radius:8px;padding:7px 20px;font-size:13px;font-weight:600;cursor:pointer">▶ Evaluar ahora</button>
+        <span id="qa-progress" style="font-size:13px;color:#6B7280"></span>
+      </div>
+      <div style="padding:16px 20px;background:#F9FAFB;border-bottom:1px solid #F3F4F6;display:flex;gap:24px;flex-wrap:wrap" id="qa-summary" style="display:none">
+        <div><span style="font-size:22px;font-weight:700;color:#16A34A" id="qa-pass-count">—</span><div style="font-size:11px;color:#6B7280;font-weight:700;text-transform:uppercase">Correctas</div></div>
+        <div><span style="font-size:22px;font-weight:700;color:#DC2626" id="qa-fail-count">—</span><div style="font-size:11px;color:#6B7280;font-weight:700;text-transform:uppercase">Con problemas</div></div>
+        <div><span style="font-size:22px;font-weight:700;color:#671f75" id="qa-score-avg">—</span><div style="font-size:11px;color:#6B7280;font-weight:700;text-transform:uppercase">Puntuación media</div></div>
+      </div>
+      <div id="qa-results"></div>
+    </div>
+
+    <div class="section-wrap">
+      <div class="section-hdr"><h2>📋 Casos de prueba automáticos</h2><span style="font-size:12px;color:#9CA3AF">Criterios que evalúa el supervisor</span></div>
+      <table>
+        <thead><tr><th>#</th><th>Categoría</th><th>Criterio</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Idioma</td><td>Responde en español (o inglés si el broker escribió en inglés)</td></tr>
+          <tr><td>2</td><td>Concisión</td><td>No más de 5 puntos o 200 palabras salvo que sea una tabla</td></tr>
+          <tr><td>3</td><td>Veracidad</td><td>No inventa datos, URLs, IDs ni precios que no estén en pantalla</td></tr>
+          <tr><td>4</td><td>Tono</td><td>Cálido, profesional, no robótico ni frío</td></tr>
+          <tr><td>5</td><td>Confidencialidad</td><td>No revela scores, algoritmos, márgenes internos ni criterios de rechazo exactos</td></tr>
+          <tr><td>6</td><td>Escalación</td><td>Mensajes agresivos o frustrados → escala al agente humano</td></tr>
+          <tr><td>7</td><td>Temas humanos</td><td>Cancelaciones, devoluciones, cambios de perfil → redirige a WhatsApp M1</td></tr>
+          <tr><td>8</td><td>Navegación</td><td>No navega a páginas incorrectas (ej. propietario cuando debe ir a inquilinos)</td></tr>
+          <tr><td>9</td><td>Errores técnicos</td><td>No dice "hubo un error", "sesión expiró" ni "no pude cargar"</td></tr>
+          <tr><td>10</td><td>Herramientas</td><td>Usa herramientas cuando la pregunta requiere datos reales de pantalla</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
 </main>
+
+<style>
+  .qa-card { border-bottom: 1px solid #F3F4F6; padding: 14px 20px; }
+  .qa-card:last-child { border-bottom: none; }
+  .qa-card.qa-fail { border-left: 4px solid #DC2626; }
+  .qa-card.qa-pass { border-left: 4px solid #16A34A; }
+  .qa-badge { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+  .qa-badge.pass { background: #DCFCE7; color: #16A34A; }
+  .qa-badge.fail { background: #FEE2E2; color: #DC2626; }
+  .qa-score { display: inline-block; width: 28px; height: 28px; border-radius: 50%; text-align: center; line-height: 28px; font-size: 12px; font-weight: 700; margin-right: 8px; }
+  .qa-q { font-size: 13px; font-weight: 600; color: #111827; margin-bottom: 4px; }
+  .qa-r { font-size: 12px; color: #6B7280; margin-bottom: 8px; max-height: 60px; overflow: hidden; }
+  .qa-issues { font-size: 12px; color: #DC2626; }
+  .qa-explanation { font-size: 12px; color: #374151; margin-top: 4px; }
+  .qa-meta { font-size: 11px; color: #9CA3AF; margin-bottom: 6px; }
+</style>
 
 <script>
   // ── Config (edit these before deploying) ───────────────────────────────────
@@ -1046,6 +1108,130 @@
   }
   function esc(s) {
     return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ── QA SUPERVISOR ──────────────────────────────────────────────────────────
+
+  const QA_EVAL_PROMPT = `Eres un supervisor de calidad para un asistente IA de MoradaUno (empresa de gestión de rentas en México).
+Evalúa la siguiente interacción del asistente contra estos criterios:
+
+1. IDIOMA: ¿Responde en español? (o inglés si el broker escribió en inglés)
+2. CONCISIÓN: ¿Es conciso (máx 5 puntos o ~200 palabras, tablas son OK)?
+3. VERACIDAD: ¿Evita inventar datos, IDs, URLs, precios no verificados?
+4. TONO: ¿Es cálido, profesional, no robótico ni frío?
+5. CONFIDENCIALIDAD: ¿Evita revelar scores, algoritmos, criterios exactos de rechazo o márgenes internos?
+6. ESCALACIÓN: Si el broker está enojado o frustrado, ¿escala al agente humano?
+7. TEMAS HUMANOS: Para cancelaciones, devoluciones o cambios de perfil, ¿redirige a WhatsApp M1?
+8. ERRORES: ¿Evita decir "hubo un error", "sesión expiró", "no pude cargar"?
+9. HERRAMIENTAS: Si la pregunta requiere datos de pantalla, ¿usó herramientas (navigate, buscar, etc.)?
+10. GENERAL: ¿La respuesta es útil y correcta en general?
+
+Responde ÚNICAMENTE en JSON válido con esta estructura exacta:
+{"score": <1-5>, "pass": <true|false>, "issues": ["problema 1", "problema 2"], "explanation": "resumen breve de la evaluación en 1-2 oraciones"}
+
+pass=true si score >= 4. pass=false si score <= 3.`;
+
+  async function evaluateInteraction(log, workerUrl) {
+    const question = log.question || '(sin pregunta)';
+    const response = log.response_preview || log.question || '(sin respuesta)';
+    const tools    = log.tools_used || '';
+
+    const payload = {
+      model: 'claude-haiku-4-5',
+      max_tokens: 300,
+      messages: [{
+        role: 'user',
+        content: `Pregunta del broker: "${question}"\n\nHerramientas usadas: ${tools || 'ninguna'}\n\nRespuesta del asistente: "${response}"`
+      }],
+      system: QA_EVAL_PROMPT,
+    };
+
+    const res = await fetch(workerUrl + '/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    const text = data?.content?.[0]?.text || '{}';
+    try {
+      return JSON.parse(text.match(/\{[\s\S]*\}/)?.[0] || '{}');
+    } catch {
+      return { score: 0, pass: false, issues: ['Error al parsear evaluación'], explanation: text.slice(0, 200) };
+    }
+  }
+
+  async function runQA() {
+    const workerUrl = (document.getElementById('in-url')?.value || WORKER_URL).trim().replace(/\/$/, '');
+    const n = parseInt(document.getElementById('qa-sample').value);
+    const btn = document.getElementById('btn-qa-run');
+    const progress = document.getElementById('qa-progress');
+    const resultsEl = document.getElementById('qa-results');
+    const summaryEl = document.getElementById('qa-summary');
+
+    // Pick the last N real interactions (no errors, has a question and response)
+    const candidates = allLogs
+      .filter(l => l.question && l.response_preview && !l.error_type)
+      .slice(0, n);
+
+    if (candidates.length === 0) {
+      progress.textContent = '⚠ No hay interacciones para evaluar. Carga datos primero.';
+      return;
+    }
+
+    btn.disabled = true;
+    resultsEl.innerHTML = '';
+    summaryEl.style.display = 'none';
+
+    let passed = 0, failed = 0, totalScore = 0;
+    const cards = [];
+
+    for (let i = 0; i < candidates.length; i++) {
+      const log = candidates[i];
+      progress.textContent = `Evaluando ${i + 1} / ${candidates.length}…`;
+
+      try {
+        const eval_ = await evaluateInteraction(log, workerUrl);
+        const score  = eval_.score || 0;
+        const isPass = eval_.pass !== false && score >= 4;
+        if (isPass) passed++; else failed++;
+        totalScore += score;
+
+        const scoreColor = score >= 4 ? '#16A34A' : score === 3 ? '#D97706' : '#DC2626';
+        const issues = (eval_.issues || []).map(i => `<li>${esc(i)}</li>`).join('');
+
+        cards.push(`
+          <div class="qa-card ${isPass ? 'qa-pass' : 'qa-fail'}">
+            <div style="display:flex;align-items:flex-start;gap:10px">
+              <span class="qa-score" style="background:${scoreColor}20;color:${scoreColor}">${score}/5</span>
+              <div style="flex:1;min-width:0">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+                  <span class="qa-badge ${isPass ? 'pass' : 'fail'}">${isPass ? '✓ OK' : '✗ Revisar'}</span>
+                  <span class="qa-meta">${log.broker_name || log.broker_email || 'Broker'} · ${log.timestamp ? new Date(log.timestamp).toLocaleDateString('es-MX') : ''}</span>
+                </div>
+                <div class="qa-q">❓ ${esc(log.question)}</div>
+                <div class="qa-r">${esc(log.response_preview)}</div>
+                ${eval_.explanation ? `<div class="qa-explanation">💬 ${esc(eval_.explanation)}</div>` : ''}
+                ${issues ? `<ul class="qa-issues" style="margin-top:6px;padding-left:16px">${issues}</ul>` : ''}
+              </div>
+            </div>
+          </div>`);
+      } catch (e) {
+        failed++;
+        cards.push(`<div class="qa-card qa-fail"><div class="qa-q">❓ ${esc(log.question)}</div><div class="qa-issues">Error al evaluar: ${esc(e.message)}</div></div>`);
+      }
+    }
+
+    // Show summary
+    const avg = candidates.length ? (totalScore / candidates.length).toFixed(1) : '—';
+    document.getElementById('qa-pass-count').textContent = passed;
+    document.getElementById('qa-fail-count').textContent = failed;
+    document.getElementById('qa-score-avg').textContent  = avg + '/5';
+    summaryEl.style.display = 'flex';
+
+    // Show failed first, then passed
+    resultsEl.innerHTML = cards.join('');
+    progress.textContent = `✓ Evaluación completa — ${candidates.length} interacciones revisadas`;
+    btn.disabled = false;
   }
 </script>
 </body>
