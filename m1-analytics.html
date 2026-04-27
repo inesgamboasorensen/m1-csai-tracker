@@ -142,6 +142,35 @@
       .tab-nav { padding: 0 14px; overflow-x: auto; }
       .tab-btn { padding: 12px 14px; font-size: 12px; }
     }
+
+    /* ── CS Partner tab ── */
+    .signal-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+    .signal-badge.accelerating { background: #DCFCE7; color: #16A34A; }
+    .signal-badge.stable        { background: #FEF3C7; color: #92400E; }
+    .signal-badge.stagnating    { background: #FEE2E2; color: #DC2626; }
+    .signal-badge.inactive      { background: #F3F4F6; color: #6B7280; }
+    .growth-bar { display: inline-block; width: 56px; height: 6px; background: #F3F4F6; border-radius: 3px; vertical-align: middle; margin-right: 5px; overflow: hidden; }
+    .growth-bar-fill { height: 100%; border-radius: 3px; }
+    .cs-form-row td { background: #FAF5FF !important; border-top: 1px solid #E9D5FF !important; }
+    .cs-form { display: flex; gap: 12px; flex-wrap: wrap; padding: 14px 20px; align-items: flex-end; }
+    .cs-form-group { display: flex; flex-direction: column; gap: 4px; }
+    .cs-form-group label { font-size: 11px; font-weight: 700; color: #6B7280; text-transform: uppercase; letter-spacing: .04em; }
+    .cs-form-group input, .cs-form-group select { border: 1.5px solid #D8B4FE; border-radius: 8px; padding: 6px 10px; font-size: 13px; outline: none; background: #fff; }
+    .cs-form-group input:focus, .cs-form-group select:focus { border-color: #8a2a9a; }
+    .btn-cs { background: linear-gradient(135deg,#671f75,#8a2a9a); color: #fff; border: none; border-radius: 8px; padding: 7px 16px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .btn-cs:hover { opacity: .88; }
+    .btn-cs-sm { padding: 5px 12px; font-size: 12px; }
+    .btn-cs-cancel { background: #F3F4F6; border: 1.5px solid #E5E7EB; border-radius: 8px; padding: 6px 14px; font-size: 13px; cursor: pointer; color: #374151; font-weight: 600; }
+    .btn-cs-cancel:hover { background: #E5E7EB; }
+    .cs-filter-bar { display: flex; gap: 6px; padding: 12px 20px; border-bottom: 1px solid #F3F4F6; flex-wrap: wrap; }
+    .cs-filter-btn { padding: 5px 14px; border-radius: 20px; border: 1.5px solid #E5E7EB; background: #F9FAFB; font-size: 12px; font-weight: 600; color: #6B7280; cursor: pointer; transition: all .15s; }
+    .cs-filter-btn:hover { border-color: #8a2a9a; color: #671f75; }
+    .cs-filter-btn.active { background: #671f75; color: #fff; border-color: #671f75; }
+    .trend-up   { color: #16A34A; font-weight: 700; }
+    .trend-down { color: #DC2626; font-weight: 700; }
+    .trend-flat { color: #9CA3AF; }
+    .impact-positive { color: #16A34A; font-weight: 700; }
+    .impact-negative { color: #DC2626; font-weight: 600; }
   </style>
 </head>
 <body>
@@ -198,6 +227,8 @@
   <button class="tab-btn" onclick="switchTab('alerts')">🚨 Alertas</button>
   <button class="tab-btn" onclick="switchTab('mejoras')">👎 Mejoras</button>
   <button class="tab-btn" onclick="switchTab('log')">Registro</button>
+  <button class="tab-btn" onclick="switchTab('cs')">🤝 CS Partner</button>
+  <button class="tab-btn" onclick="switchTab('qa')">🤖 QA Supervisor</button>
 </div>
 
 <main>
@@ -342,7 +373,129 @@
 
   </div>
 
+  <!-- ── TAB 6: CS PARTNER ───────────────────────────────────────────────── -->
+  <div class="tab-pane" id="tab-cs">
+
+    <div class="cards">
+      <div class="card">
+        <div class="label">Brokers monitoreados</div>
+        <div class="value" id="cs-card-brokers">—</div>
+        <div class="sub">con actividad últimos 60d</div>
+      </div>
+      <div class="card">
+        <div class="label">Intervenciones este mes</div>
+        <div class="value" id="cs-card-interventions">—</div>
+        <div class="sub">contactos registrados</div>
+      </div>
+      <div class="card">
+        <div class="label">🟢 Acelerando</div>
+        <div class="value" id="cs-card-accelerating" style="color:#16A34A">—</div>
+        <div class="sub">más activos que el mes anterior</div>
+      </div>
+      <div class="card">
+        <div class="label">🔴 Estancados</div>
+        <div class="value" id="cs-card-stagnating" style="color:#DC2626">—</div>
+        <div class="sub">baja actividad vs. mes anterior</div>
+      </div>
+      <div class="card">
+        <div class="label">Revenue atribuido est.</div>
+        <div class="value" id="cs-card-revenue" style="color:#059669">—</div>
+        <div class="sub">MXN incremental · $3,500/deal</div>
+      </div>
+    </div>
+
+    <!-- Broker radar table -->
+    <div class="section-wrap">
+      <div class="section-hdr">
+        <h2>🎯 Radar de brokers</h2>
+        <span id="cs-broker-count" style="font-size:12px;color:#9CA3AF"></span>
+      </div>
+      <div class="cs-filter-bar">
+        <button class="cs-filter-btn active" onclick="setCsFilter('all',this)">Todos</button>
+        <button class="cs-filter-btn" onclick="setCsFilter('stagnating',this)">🔴 Estancados</button>
+        <button class="cs-filter-btn" onclick="setCsFilter('inactive',this)">⚫ Inactivos</button>
+        <button class="cs-filter-btn" onclick="setCsFilter('stable',this)">🟡 Estables</button>
+        <button class="cs-filter-btn" onclick="setCsFilter('accelerating',this)">🟢 Acelerando</button>
+      </div>
+      <div id="cs-broker-table"><div class="empty">Carga los datos para ver el análisis de brokers.</div></div>
+    </div>
+
+    <!-- Intervention history -->
+    <div class="section-wrap">
+      <div class="section-hdr">
+        <h2>📋 Historial de intervenciones</h2>
+        <div style="display:flex;gap:8px;align-items:center">
+          <span id="cs-history-count" style="font-size:12px;color:#9CA3AF"></span>
+          <button class="btn-secondary" style="font-size:12px;padding:5px 12px" onclick="exportCsCSV()">⬇ CSV</button>
+        </div>
+      </div>
+      <div id="cs-history-body"><div class="empty">Aún no se han registrado intervenciones.</div></div>
+    </div>
+
+  </div>
+
+  <!-- ── TAB 7: QA SUPERVISOR ─────────────────────────────────────────────── -->
+  <div class="tab-pane" id="tab-qa">
+    <div class="section-wrap" style="margin-bottom:20px">
+      <div class="section-hdr">
+        <h2>🤖 QA Supervisor — Evaluación automática de respuestas</h2>
+        <span id="qa-status-hdr"></span>
+      </div>
+      <div style="padding:16px 20px;border-bottom:1px solid #F3F4F6;display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+        <label style="font-size:13px;color:#6B7280">Evaluar últimas</label>
+        <select id="qa-sample" style="border:1.5px solid #E5E7EB;border-radius:8px;padding:5px 10px;font-size:13px">
+          <option value="10">10 conversaciones</option>
+          <option value="20" selected>20 conversaciones</option>
+          <option value="50">50 conversaciones</option>
+        </select>
+        <button id="btn-qa-run" onclick="runQA()" style="background:linear-gradient(135deg,#671f75,#8a2a9a);color:#fff;border:none;border-radius:8px;padding:7px 20px;font-size:13px;font-weight:600;cursor:pointer">▶ Evaluar ahora</button>
+        <span id="qa-progress" style="font-size:13px;color:#6B7280"></span>
+      </div>
+      <div style="padding:16px 20px;background:#F9FAFB;border-bottom:1px solid #F3F4F6;display:flex;gap:24px;flex-wrap:wrap" id="qa-summary" style="display:none">
+        <div><span style="font-size:22px;font-weight:700;color:#16A34A" id="qa-pass-count">—</span><div style="font-size:11px;color:#6B7280;font-weight:700;text-transform:uppercase">Correctas</div></div>
+        <div><span style="font-size:22px;font-weight:700;color:#DC2626" id="qa-fail-count">—</span><div style="font-size:11px;color:#6B7280;font-weight:700;text-transform:uppercase">Con problemas</div></div>
+        <div><span style="font-size:22px;font-weight:700;color:#671f75" id="qa-score-avg">—</span><div style="font-size:11px;color:#6B7280;font-weight:700;text-transform:uppercase">Puntuación media</div></div>
+      </div>
+      <div id="qa-results"></div>
+    </div>
+
+    <div class="section-wrap">
+      <div class="section-hdr"><h2>📋 Casos de prueba automáticos</h2><span style="font-size:12px;color:#9CA3AF">Criterios que evalúa el supervisor</span></div>
+      <table>
+        <thead><tr><th>#</th><th>Categoría</th><th>Criterio</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Idioma</td><td>Responde en español (o inglés si el broker escribió en inglés)</td></tr>
+          <tr><td>2</td><td>Concisión</td><td>No más de 5 puntos o 200 palabras salvo que sea una tabla</td></tr>
+          <tr><td>3</td><td>Veracidad</td><td>No inventa datos, URLs, IDs ni precios que no estén en pantalla</td></tr>
+          <tr><td>4</td><td>Tono</td><td>Cálido, profesional, no robótico ni frío</td></tr>
+          <tr><td>5</td><td>Confidencialidad</td><td>No revela scores, algoritmos, márgenes internos ni criterios de rechazo exactos</td></tr>
+          <tr><td>6</td><td>Escalación</td><td>Mensajes agresivos o frustrados → escala al agente humano</td></tr>
+          <tr><td>7</td><td>Temas humanos</td><td>Cancelaciones, devoluciones, cambios de perfil → redirige a WhatsApp M1</td></tr>
+          <tr><td>8</td><td>Navegación</td><td>No navega a páginas incorrectas (ej. propietario cuando debe ir a inquilinos)</td></tr>
+          <tr><td>9</td><td>Errores técnicos</td><td>No dice "hubo un error", "sesión expiró" ni "no pude cargar"</td></tr>
+          <tr><td>10</td><td>Herramientas</td><td>Usa herramientas cuando la pregunta requiere datos reales de pantalla</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
 </main>
+
+<style>
+  .qa-card { border-bottom: 1px solid #F3F4F6; padding: 14px 20px; }
+  .qa-card:last-child { border-bottom: none; }
+  .qa-card.qa-fail { border-left: 4px solid #DC2626; }
+  .qa-card.qa-pass { border-left: 4px solid #16A34A; }
+  .qa-badge { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+  .qa-badge.pass { background: #DCFCE7; color: #16A34A; }
+  .qa-badge.fail { background: #FEE2E2; color: #DC2626; }
+  .qa-score { display: inline-block; width: 28px; height: 28px; border-radius: 50%; text-align: center; line-height: 28px; font-size: 12px; font-weight: 700; margin-right: 8px; }
+  .qa-q { font-size: 13px; font-weight: 600; color: #111827; margin-bottom: 4px; }
+  .qa-r { font-size: 12px; color: #6B7280; margin-bottom: 8px; max-height: 60px; overflow: hidden; }
+  .qa-issues { font-size: 12px; color: #DC2626; }
+  .qa-explanation { font-size: 12px; color: #374151; margin-top: 4px; }
+  .qa-meta { font-size: 11px; color: #9CA3AF; margin-bottom: 6px; }
+</style>
 
 <script>
   // ── Config (edit these before deploying) ───────────────────────────────────
@@ -368,13 +521,14 @@
 
   // ── Tabs ───────────────────────────────────────────────────────────────────
   function switchTab(name) {
-    const names = ['analytics','top10','alerts','mejoras','log'];
+    const names = ['analytics','top10','alerts','mejoras','log','cs','qa'];
     document.querySelectorAll('.tab-btn').forEach((b, i) => {
       b.classList.toggle('active', names[i] === name);
     });
     document.querySelectorAll('.tab-pane').forEach(p => {
       p.classList.toggle('active', p.id === 'tab-' + name);
     });
+    if (name === 'cs') renderCS();
   }
 
   // ── Load data ──────────────────────────────────────────────────────────────
@@ -404,7 +558,14 @@
         status.textContent = '❌ Respuesta inesperada del Worker';
         return;
       }
-      allLogs = data;
+      const TEST_USERS = ['ines gamboa sorensen', 'moradauno - atención directa', 'moradauno - atencion directa'];
+      const START_DATE = '2026-03-30';
+      allLogs = data.filter(l => {
+        const name = (l.broker_name || l.broker_email || '').toLowerCase();
+        if (TEST_USERS.some(t => name.includes(t))) return false;
+        if (l.timestamp && l.timestamp.slice(0, 10) < START_DATE) return false;
+        return true;
+      });
       const ts = new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
       status.textContent = allLogs.length
         ? `✓ ${allLogs.length} registros · actualizado ${ts}`
@@ -416,6 +577,7 @@
       renderAlerts();
       renderMejoras();
       renderTable();
+      renderCS();
     } catch (e) {
       status.textContent = `❌ No se pudo conectar al Worker: ${e.message}`;
     }
@@ -1039,6 +1201,466 @@
   }
   function esc(s) {
     return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ── CS PARTNER ─────────────────────────────────────────────────────────────
+
+  const CS_TICKET_MXN = 3500; // revenue por deal por mes (ajustable)
+  let csInterventions = JSON.parse(localStorage.getItem('m1_cs_interventions') || '[]');
+  let csSignalFilter  = 'all';
+
+  function saveCsData() {
+    localStorage.setItem('m1_cs_interventions', JSON.stringify(csInterventions));
+  }
+
+  // Build per-broker activity from allLogs
+  function getBrokerActivity() {
+    const now   = new Date();
+    const ms30  = 30 * 24 * 60 * 60 * 1000;
+    const d30   = new Date(now - ms30);
+    const d60   = new Date(now - 2 * ms30);
+
+    const map = {};
+    allLogs.forEach(l => {
+      const key = l.broker_email || l.broker_name;
+      if (!key) return;
+      if (!map[key]) map[key] = { key, email: l.broker_email||'', name: l.broker_name||key, all:[], last30:[], prev30:[], lastTs: null };
+      const ts = new Date(l.timestamp);
+      map[key].all.push(l);
+      if (ts >= d30) map[key].last30.push(l);
+      else if (ts >= d60) map[key].prev30.push(l);
+      if (!map[key].lastTs || ts > map[key].lastTs) map[key].lastTs = ts;
+    });
+
+    return Object.values(map).map(b => {
+      const last30 = b.last30.length;
+      const prev30 = b.prev30.length;
+      const daysSince = b.lastTs ? Math.floor((now - b.lastTs) / (24*60*60*1000)) : 999;
+
+      // Signal
+      let signal;
+      if (daysSince >= 21 && last30 === 0)                          signal = 'inactive';
+      else if ((prev30 === 0 && last30 >= 3) || (prev30 > 0 && last30 > prev30 * 1.3)) signal = 'accelerating';
+      else if (prev30 >= 3 && last30 < prev30 * 0.6)               signal = 'stagnating';
+      else                                                           signal = 'stable';
+
+      // Growth score 0–100
+      const recency  = Math.max(0, 40 - daysSince * 2.5);
+      const ratio    = prev30 > 0 ? last30 / prev30 : (last30 >= 3 ? 2 : last30 / 3);
+      const accel    = Math.min(40, Math.round(Math.min(ratio, 2) * 20));
+      const vol      = Math.min(20, Math.round(last30 * 1.5));
+      const score    = Math.min(100, Math.round(recency + accel + vol));
+
+      // CS interventions for this broker
+      const mine = csInterventions
+        .filter(i => i.broker_key === b.key)
+        .sort((a, c) => new Date(a.date) - new Date(c.date));
+
+      return { ...b, last30, prev30, daysSince, signal, score, interventions: mine };
+    });
+  }
+
+  // Estimated incremental MXN revenue from logged interventions
+  function computeCsRevenue(brokers) {
+    let total = 0;
+    brokers.forEach(b => {
+      if (b.interventions.length < 2) return;
+      const first = b.interventions[0];
+      const last  = b.interventions.at(-1);
+      if (first.deals_per_month == null || last.deals_per_month == null) return;
+      const delta  = last.deals_per_month - first.deals_per_month;
+      if (delta <= 0) return;
+      const months = Math.max(1, Math.round((new Date(last.date) - new Date(first.date)) / (30*24*60*60*1000)));
+      total += delta * CS_TICKET_MXN * months;
+    });
+    return total;
+  }
+
+  function renderCS() {
+    if (!allLogs.length) return;
+    const brokers = getBrokerActivity();
+    const now     = new Date();
+    const d30     = new Date(now - 30*24*60*60*1000);
+
+    const thisMonthCs  = csInterventions.filter(i => new Date(i.date) >= d30).length;
+    const nAccelerating = brokers.filter(b => b.signal === 'accelerating').length;
+    const nStagnating   = brokers.filter(b => b.signal === 'stagnating' || b.signal === 'inactive').length;
+    const revenue       = computeCsRevenue(brokers);
+
+    document.getElementById('cs-card-brokers').textContent       = brokers.length;
+    document.getElementById('cs-card-interventions').textContent = thisMonthCs;
+    document.getElementById('cs-card-accelerating').textContent  = nAccelerating;
+    document.getElementById('cs-card-stagnating').textContent    = nStagnating;
+    document.getElementById('cs-card-revenue').textContent       = revenue >= 1000
+      ? `$${(revenue/1000).toFixed(0)}k`
+      : `$${Math.round(revenue).toLocaleString('es-MX')}`;
+
+    renderCsBrokerTable(brokers);
+    renderCsHistory(brokers);
+  }
+
+  function setCsFilter(signal, btn) {
+    csSignalFilter = signal;
+    document.querySelectorAll('.cs-filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderCS();
+  }
+
+  function renderCsBrokerTable(brokers) {
+    const SIGNAL = {
+      accelerating: { label: '🟢 Acelerando', cls: 'accelerating' },
+      stable:       { label: '🟡 Estable',    cls: 'stable'       },
+      stagnating:   { label: '🔴 Estancado',  cls: 'stagnating'   },
+      inactive:     { label: '⚫ Inactivo',   cls: 'inactive'     },
+    };
+    const ORDER = { stagnating:0, inactive:1, stable:2, accelerating:3 };
+
+    let list = csSignalFilter === 'all' ? brokers : brokers.filter(b => b.signal === csSignalFilter);
+    list = [...list].sort((a,b) => (ORDER[a.signal] - ORDER[b.signal]) || (b.score - a.score));
+
+    document.getElementById('cs-broker-count').textContent = `${list.length} broker${list.length !== 1 ? 's' : ''}`;
+
+    if (!list.length) {
+      document.getElementById('cs-broker-table').innerHTML = '<div class="empty">No hay brokers con este filtro.</div>';
+      return;
+    }
+
+    document.getElementById('cs-broker-table').innerHTML = `
+      <table>
+        <thead><tr>
+          <th>Asesor</th>
+          <th style="text-align:center">Actividad 30d</th>
+          <th>Tendencia</th>
+          <th>Score</th>
+          <th>Señal</th>
+          <th style="text-align:center">Sin actividad</th>
+          <th>Último contacto CS</th>
+          <th></th>
+        </tr></thead>
+        <tbody>
+          ${list.map((b, i) => {
+            const sm  = SIGNAL[b.signal];
+            const pct = b.prev30 > 0 ? Math.round((b.last30 - b.prev30) / b.prev30 * 100) : null;
+            const trendStr = pct === null
+              ? (b.last30 > 0 ? '<span class="trend-up">Nuevo ↑</span>' : '<span class="trend-flat">—</span>')
+              : pct > 0  ? `<span class="trend-up">↑ +${pct}%</span>`
+              : pct < 0  ? `<span class="trend-down">↓ ${pct}%</span>`
+              : `<span class="trend-flat">→ sin cambio</span>`;
+            const scoreColor = b.score >= 65 ? '#16A34A' : b.score >= 35 ? '#D97706' : '#DC2626';
+            const lastCs = b.interventions.at(-1);
+            const lastCsHtml = lastCs
+              ? `<div style="font-size:11px;font-weight:600;color:#671f75">${csTypeIcon(lastCs.type)} ${fmtDateShort(lastCs.date)}</div>
+                 ${lastCs.deals_per_month != null ? `<div style="font-size:10px;color:#9CA3AF">${lastCs.deals_per_month} deals/mes</div>` : ''}`
+              : `<span style="color:#D1D5DB;font-size:11px">Sin contacto</span>`;
+            const rowId  = `cs-form-row-${i}`;
+            const safeKey = encodeURIComponent(b.key);
+            return `
+              <tr id="cs-row-${i}">
+                <td style="min-width:130px">
+                  <div style="font-weight:600;font-size:13px">${esc(b.name)}</div>
+                  <div style="font-size:11px;color:#9CA3AF">${esc(b.email)}</div>
+                </td>
+                <td style="text-align:center">
+                  <div style="font-size:16px;font-weight:700;color:#671f75">${b.last30}</div>
+                  <div style="font-size:10px;color:#9CA3AF">${b.prev30} mes ant.</div>
+                </td>
+                <td style="white-space:nowrap">${trendStr}</td>
+                <td style="white-space:nowrap;min-width:90px">
+                  <div class="growth-bar"><div class="growth-bar-fill" style="width:${b.score}%;background:${scoreColor}"></div></div>
+                  <span style="font-size:12px;font-weight:700;color:${scoreColor}">${b.score}/100</span>
+                </td>
+                <td><span class="signal-badge ${sm.cls}">${sm.label}</span></td>
+                <td style="text-align:center">
+                  <span style="font-size:13px;font-weight:600;color:${b.daysSince > 14 ? '#DC2626' : '#374151'}">${b.daysSince === 999 ? '—' : b.daysSince + 'días'}</span>
+                </td>
+                <td style="min-width:130px">${lastCsHtml}</td>
+                <td>
+                  <button class="btn-cs btn-cs-sm" id="cs-btn-${i}" onclick="toggleCsForm(${i},'${safeKey}','${esc(b.name)}','${esc(b.email)}')">
+                    + Registrar
+                  </button>
+                </td>
+              </tr>
+              <tr id="${rowId}" class="cs-form-row" style="display:none">
+                <td colspan="8">
+                  <div class="cs-form">
+                    <div class="cs-form-group">
+                      <label>Tipo de contacto</label>
+                      <select id="cs-type-${i}">
+                        <option value="llamada">📞 Llamada</option>
+                        <option value="demo">💻 Demo</option>
+                        <option value="visita">🏢 Visita presencial</option>
+                        <option value="whatsapp">💬 WhatsApp</option>
+                        <option value="email">📧 Email</option>
+                        <option value="capacitacion">🎓 Capacitación</option>
+                      </select>
+                    </div>
+                    <div class="cs-form-group">
+                      <label>Deals/mes actuales</label>
+                      <input id="cs-deals-${i}" type="number" min="0" placeholder="ej. 5" style="width:90px"/>
+                    </div>
+                    <div class="cs-form-group" style="flex:1;min-width:200px">
+                      <label>Notas del contacto</label>
+                      <input id="cs-notes-${i}" type="text" placeholder="Qué se habló, compromisos, siguiente paso…" style="width:100%"/>
+                    </div>
+                    <div style="display:flex;gap:8px;align-items:flex-end;padding-bottom:1px">
+                      <button class="btn-cs" onclick="saveCsIntervention(${i},'${safeKey}','${esc(b.name)}','${esc(b.email)}')">💾 Guardar</button>
+                      <button class="btn-cs-cancel" onclick="toggleCsForm(${i})">Cancelar</button>
+                    </div>
+                  </div>
+                </td>
+              </tr>`;
+          }).join('')}
+        </tbody>
+      </table>`;
+  }
+
+  function toggleCsForm(i) {
+    const row = document.getElementById(`cs-form-row-${i}`);
+    if (!row) return;
+    const wasOpen = row.style.display !== 'none';
+    document.querySelectorAll('.cs-form-row').forEach(r => r.style.display = 'none');
+    if (!wasOpen) {
+      row.style.display = 'table-row';
+      setTimeout(() => document.getElementById(`cs-notes-${i}`)?.focus(), 80);
+    }
+  }
+
+  function saveCsIntervention(i, encodedKey, name, email) {
+    const key   = decodeURIComponent(encodedKey);
+    const type  = document.getElementById(`cs-type-${i}`)?.value  || 'llamada';
+    const deals = document.getElementById(`cs-deals-${i}`)?.value;
+    const notes = document.getElementById(`cs-notes-${i}`)?.value || '';
+
+    csInterventions.push({
+      id:            `${Date.now()}-${Math.random().toString(36).slice(2,6)}`,
+      date:          new Date().toISOString().slice(0,10),
+      logged_at:     new Date().toISOString(),
+      broker_key:    key,
+      broker_name:   name,
+      broker_email:  email,
+      type,
+      deals_per_month: (deals !== '' && deals != null) ? parseInt(deals) : null,
+      notes,
+    });
+    saveCsData();
+
+    const btn = document.getElementById(`cs-btn-${i}`);
+    if (btn) { btn.textContent = '✓ Guardado!'; setTimeout(() => { btn.textContent = '+ Registrar'; }, 2000); }
+    document.getElementById(`cs-form-row-${i}`).style.display = 'none';
+    renderCS();
+  }
+
+  function deleteCsIntervention(id) {
+    if (!confirm('¿Eliminar esta intervención?')) return;
+    csInterventions = csInterventions.filter(i => i.id !== id);
+    saveCsData();
+    renderCS();
+  }
+
+  function renderCsHistory(brokers) {
+    const sorted = [...csInterventions].sort((a,b) => new Date(b.logged_at||b.date) - new Date(a.logged_at||a.date));
+    document.getElementById('cs-history-count').textContent = `${sorted.length} registro${sorted.length !== 1 ? 's' : ''}`;
+
+    if (!sorted.length) {
+      document.getElementById('cs-history-body').innerHTML =
+        '<div class="empty">Usa el botón <strong>+ Registrar</strong> en la tabla de arriba para añadir tu primera intervención.</div>';
+      return;
+    }
+
+    // Build ordered history per broker for impact calculation
+    const byBroker = {};
+    [...csInterventions].sort((a,b) => new Date(a.date)-new Date(b.date)).forEach(i => {
+      if (!byBroker[i.broker_key]) byBroker[i.broker_key] = [];
+      byBroker[i.broker_key].push(i);
+    });
+
+    document.getElementById('cs-history-body').innerHTML = `
+      <table>
+        <thead><tr>
+          <th>Fecha</th><th>Asesor</th><th>Tipo</th><th style="text-align:center">Deals/mes</th><th>Notas</th><th>Impacto registrado</th><th></th>
+        </tr></thead>
+        <tbody>
+          ${sorted.map(entry => {
+            const hist = byBroker[entry.broker_key] || [];
+            const idx  = hist.findIndex(e => e.id === entry.id);
+            let impactHtml = '<span style="color:#D1D5DB">—</span>';
+            if (idx === 0 && entry.deals_per_month != null) {
+              impactHtml = `<span style="font-size:11px;color:#6B7280">📌 Baseline: <strong>${entry.deals_per_month}</strong> deals/mes</span>`;
+            } else if (idx > 0 && entry.deals_per_month != null && hist[idx-1].deals_per_month != null) {
+              const delta = entry.deals_per_month - hist[idx-1].deals_per_month;
+              const sign  = delta > 0 ? '+' : '';
+              if (delta > 0) {
+                const mxn = delta * CS_TICKET_MXN;
+                impactHtml = `<span class="impact-positive">${sign}${delta} deals/mes</span>
+                  <div style="font-size:10px;color:#059669;font-weight:600">~$${mxn.toLocaleString('es-MX')} MXN/mes</div>`;
+              } else if (delta < 0) {
+                impactHtml = `<span class="impact-negative">${sign}${delta} deals/mes</span>`;
+              } else {
+                impactHtml = `<span class="trend-flat">Sin cambio</span>`;
+              }
+            }
+            return `<tr>
+              <td style="white-space:nowrap;color:#6B7280;font-size:12px;min-width:80px">${fmtDateShort(entry.date)}</td>
+              <td style="min-width:110px">
+                <div style="font-weight:600;font-size:12px">${esc(entry.broker_name||'—')}</div>
+                <div style="font-size:10px;color:#9CA3AF">${esc(entry.broker_email||'')}</div>
+              </td>
+              <td><span class="pill purple">${csTypeIcon(entry.type)} ${csTypeLabel(entry.type)}</span></td>
+              <td style="text-align:center;font-size:14px;font-weight:700;color:#374151">${entry.deals_per_month ?? '—'}</td>
+              <td style="max-width:260px;font-size:12px;color:#374151;line-height:1.4">${esc(entry.notes||'—')}</td>
+              <td style="min-width:140px">${impactHtml}</td>
+              <td><button onclick="deleteCsIntervention('${entry.id}')" style="background:none;border:none;cursor:pointer;color:#D1D5DB;font-size:15px;padding:2px 6px" title="Eliminar">🗑</button></td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>`;
+  }
+
+  function csTypeIcon(type) {
+    return { llamada:'📞', demo:'💻', visita:'🏢', whatsapp:'💬', email:'📧', capacitacion:'🎓' }[type] || '🤝';
+  }
+  function csTypeLabel(type) {
+    return { llamada:'Llamada', demo:'Demo', visita:'Visita', whatsapp:'WhatsApp', email:'Email', capacitacion:'Capacitación' }[type] || type;
+  }
+  function fmtDateShort(iso) {
+    if (!iso) return '—';
+    const d = new Date(iso.length === 10 ? iso + 'T12:00:00' : iso);
+    return d.toLocaleDateString('es-MX', { day:'2-digit', month:'short', year:'2-digit' });
+  }
+  function exportCsCSV() {
+    if (!csInterventions.length) return;
+    const cols = ['date','broker_name','broker_email','type','deals_per_month','notes','logged_at'];
+    const csv  = [cols.join(','), ...csInterventions.map(i =>
+      cols.map(c => `"${String(i[c]??'').replace(/"/g,'""')}"`).join(',')
+    )].join('\n');
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob(['\ufeff'+csv], { type:'text/csv;charset=utf-8;' }));
+    a.download = `cs-intervenciones-${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+  }
+
+  // ── QA SUPERVISOR ──────────────────────────────────────────────────────────
+
+  const QA_EVAL_PROMPT = `Eres un supervisor de calidad para un asistente IA de MoradaUno (empresa de gestión de rentas en México).
+Evalúa la siguiente interacción del asistente contra estos criterios:
+
+1. IDIOMA: ¿Responde en español? (o inglés si el broker escribió en inglés)
+2. CONCISIÓN: ¿Es conciso (máx 5 puntos o ~200 palabras, tablas son OK)?
+3. VERACIDAD: ¿Evita inventar datos, IDs, URLs, precios no verificados?
+4. TONO: ¿Es cálido, profesional, no robótico ni frío?
+5. CONFIDENCIALIDAD: ¿Evita revelar scores, algoritmos, criterios exactos de rechazo o márgenes internos?
+6. ESCALACIÓN: Si el broker está enojado o frustrado, ¿escala al agente humano?
+7. TEMAS HUMANOS: Para cancelaciones, devoluciones o cambios de perfil, ¿redirige a WhatsApp M1?
+8. ERRORES: ¿Evita decir "hubo un error", "sesión expiró", "no pude cargar"?
+9. HERRAMIENTAS: Si la pregunta requiere datos de pantalla, ¿usó herramientas (navigate, buscar, etc.)?
+10. GENERAL: ¿La respuesta es útil y correcta en general?
+
+Responde ÚNICAMENTE en JSON válido con esta estructura exacta:
+{"score": <1-5>, "pass": <true|false>, "issues": ["problema 1", "problema 2"], "explanation": "resumen breve de la evaluación en 1-2 oraciones"}
+
+pass=true si score >= 4. pass=false si score <= 3.`;
+
+  async function evaluateInteraction(log, workerUrl) {
+    const question = log.question || '(sin pregunta)';
+    const response = log.response_preview || log.question || '(sin respuesta)';
+    const tools    = log.tools_used || '';
+
+    const payload = {
+      model: 'claude-haiku-4-5',
+      max_tokens: 300,
+      messages: [{
+        role: 'user',
+        content: `Pregunta del broker: "${question}"\n\nHerramientas usadas: ${tools || 'ninguna'}\n\nRespuesta del asistente: "${response}"`
+      }],
+      system: QA_EVAL_PROMPT,
+    };
+
+    const res = await fetch(workerUrl + '/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    const text = data?.content?.[0]?.text || '{}';
+    try {
+      return JSON.parse(text.match(/\{[\s\S]*\}/)?.[0] || '{}');
+    } catch {
+      return { score: 0, pass: false, issues: ['Error al parsear evaluación'], explanation: text.slice(0, 200) };
+    }
+  }
+
+  async function runQA() {
+    const workerUrl = (document.getElementById('in-url')?.value || WORKER_URL).trim().replace(/\/$/, '');
+    const n = parseInt(document.getElementById('qa-sample').value);
+    const btn = document.getElementById('btn-qa-run');
+    const progress = document.getElementById('qa-progress');
+    const resultsEl = document.getElementById('qa-results');
+    const summaryEl = document.getElementById('qa-summary');
+
+    // Pick the last N real interactions (no errors, has a question and response)
+    const candidates = allLogs
+      .filter(l => l.question && l.response_preview && !l.error_type)
+      .slice(0, n);
+
+    if (candidates.length === 0) {
+      progress.textContent = '⚠ No hay interacciones para evaluar. Carga datos primero.';
+      return;
+    }
+
+    btn.disabled = true;
+    resultsEl.innerHTML = '';
+    summaryEl.style.display = 'none';
+
+    let passed = 0, failed = 0, totalScore = 0;
+    const cards = [];
+
+    for (let i = 0; i < candidates.length; i++) {
+      const log = candidates[i];
+      progress.textContent = `Evaluando ${i + 1} / ${candidates.length}…`;
+
+      try {
+        const eval_ = await evaluateInteraction(log, workerUrl);
+        const score  = eval_.score || 0;
+        const isPass = eval_.pass !== false && score >= 4;
+        if (isPass) passed++; else failed++;
+        totalScore += score;
+
+        const scoreColor = score >= 4 ? '#16A34A' : score === 3 ? '#D97706' : '#DC2626';
+        const issues = (eval_.issues || []).map(i => `<li>${esc(i)}</li>`).join('');
+
+        cards.push(`
+          <div class="qa-card ${isPass ? 'qa-pass' : 'qa-fail'}">
+            <div style="display:flex;align-items:flex-start;gap:10px">
+              <span class="qa-score" style="background:${scoreColor}20;color:${scoreColor}">${score}/5</span>
+              <div style="flex:1;min-width:0">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+                  <span class="qa-badge ${isPass ? 'pass' : 'fail'}">${isPass ? '✓ OK' : '✗ Revisar'}</span>
+                  <span class="qa-meta">${log.broker_name || log.broker_email || 'Broker'} · ${log.timestamp ? new Date(log.timestamp).toLocaleDateString('es-MX') : ''}</span>
+                </div>
+                <div class="qa-q">❓ ${esc(log.question)}</div>
+                <div class="qa-r">${esc(log.response_preview)}</div>
+                ${eval_.explanation ? `<div class="qa-explanation">💬 ${esc(eval_.explanation)}</div>` : ''}
+                ${issues ? `<ul class="qa-issues" style="margin-top:6px;padding-left:16px">${issues}</ul>` : ''}
+              </div>
+            </div>
+          </div>`);
+      } catch (e) {
+        failed++;
+        cards.push(`<div class="qa-card qa-fail"><div class="qa-q">❓ ${esc(log.question)}</div><div class="qa-issues">Error al evaluar: ${esc(e.message)}</div></div>`);
+      }
+    }
+
+    // Show summary
+    const avg = candidates.length ? (totalScore / candidates.length).toFixed(1) : '—';
+    document.getElementById('qa-pass-count').textContent = passed;
+    document.getElementById('qa-fail-count').textContent = failed;
+    document.getElementById('qa-score-avg').textContent  = avg + '/5';
+    summaryEl.style.display = 'flex';
+
+    // Show failed first, then passed
+    resultsEl.innerHTML = cards.join('');
+    progress.textContent = `✓ Evaluación completa — ${candidates.length} interacciones revisadas`;
+    btn.disabled = false;
   }
 </script>
 </body>
