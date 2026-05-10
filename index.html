@@ -171,6 +171,149 @@
     .trend-flat { color: #9CA3AF; }
     .impact-positive { color: #16A34A; font-weight: 700; }
     .impact-negative { color: #DC2626; font-weight: 600; }
+
+    /* ── CS Partner v2 — Worklists (Legend-inspired) ─────────────────────── */
+    #tab-cs.cs-v2 { background: #FAFAF8; margin: -24px -32px; padding: 28px 32px 60px; min-height: 80vh; }
+    @media (max-width: 700px) { #tab-cs.cs-v2 { margin: -14px -14px; padding: 20px 16px 40px; } }
+    .cs-hero { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; margin-bottom: 28px; flex-wrap: wrap; }
+    .cs-hero h1 { font-size: 30px; font-weight: 700; color: #111827; letter-spacing: -0.02em; line-height: 1.1; }
+    .cs-hero .cs-hero-sub { font-size: 14px; color: #6B7280; margin-top: 6px; max-width: 540px; line-height: 1.5; }
+    .cs-hero-meta { font-size: 11px; color: #9CA3AF; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; }
+
+    /* Segmented pill sub-tabs */
+    .cs-segments { display: inline-flex; background: #fff; border: 1px solid #E5E7EB; border-radius: 999px; padding: 4px; gap: 2px; margin-bottom: 24px; box-shadow: 0 1px 2px rgba(0,0,0,.04); }
+    .cs-seg { padding: 8px 18px; border-radius: 999px; font-size: 13px; font-weight: 600; color: #6B7280; border: none; background: transparent; cursor: pointer; transition: all .18s; white-space: nowrap; }
+    .cs-seg:hover { color: #111827; }
+    .cs-seg.active { background: #111827; color: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.15); }
+    .cs-seg .cs-seg-count { display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 10px; background: rgba(255,255,255,.18); font-size: 11px; font-weight: 700; }
+    .cs-seg:not(.active) .cs-seg-count { background: #F3F4F6; color: #6B7280; }
+
+    /* KPI strip */
+    .cs-kpi-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 24px; }
+    .cs-kpi { background: #fff; border: 1px solid #ECECE8; border-radius: 16px; padding: 16px 18px; }
+    .cs-kpi-label { font-size: 11px; color: #9CA3AF; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+    .cs-kpi-value { font-size: 24px; font-weight: 700; color: #111827; letter-spacing: -0.01em; }
+    .cs-kpi-sub { font-size: 11px; color: #6B7280; margin-top: 4px; }
+    .cs-kpi-value.accent { color: #671f75; }
+    .cs-kpi-value.green  { color: #047857; }
+    .cs-kpi-value.amber  { color: #B45309; }
+    .cs-kpi-value.red    { color: #B91C1C; }
+
+    /* Worklist toolbar */
+    .cs-toolbar { background: #fff; border: 1px solid #ECECE8; border-radius: 14px; padding: 12px 14px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 14px; }
+    .cs-search { position: relative; flex: 1; min-width: 220px; }
+    .cs-search input { width: 100%; border: 1px solid #E5E7EB; border-radius: 10px; padding: 8px 12px 8px 34px; font-size: 13px; background: #FAFAF8; outline: none; }
+    .cs-search input:focus { background: #fff; border-color: #111827; }
+    .cs-search::before { content: '🔍'; position: absolute; left: 11px; top: 50%; transform: translateY(-50%); font-size: 12px; opacity: .55; }
+    .cs-chip { padding: 6px 12px; border-radius: 999px; border: 1px solid #E5E7EB; background: #fff; font-size: 12px; font-weight: 600; color: #4B5563; cursor: pointer; transition: all .15s; white-space: nowrap; }
+    .cs-chip:hover { border-color: #111827; color: #111827; }
+    .cs-chip.active { background: #111827; color: #fff; border-color: #111827; }
+    .cs-chip.pic { color: #6D28D9; border-color: #DDD6FE; background: #F5F3FF; }
+    .cs-chip.pic.active { background: #6D28D9; color: #fff; border-color: #6D28D9; }
+    .cs-toolbar select { border: 1px solid #E5E7EB; border-radius: 10px; padding: 7px 10px; font-size: 13px; background: #fff; outline: none; cursor: pointer; }
+
+    /* Worklist table card */
+    .cs-list-card { background: #fff; border: 1px solid #ECECE8; border-radius: 16px; overflow: hidden; }
+    .cs-list-hdr { padding: 14px 18px; border-bottom: 1px solid #F3F4F6; display: flex; justify-content: space-between; align-items: center; }
+    .cs-list-hdr h2 { font-size: 14px; font-weight: 700; color: #111827; }
+    .cs-list-hdr .meta { font-size: 12px; color: #9CA3AF; }
+    table.cs-tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+    table.cs-tbl th { background: #FAFAF8; padding: 10px 16px; text-align: left; font-size: 10.5px; font-weight: 700; color: #6B7280; text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 1px solid #ECECE8; white-space: nowrap; }
+    table.cs-tbl td { padding: 14px 16px; border-bottom: 1px solid #F5F5F4; vertical-align: middle; }
+    table.cs-tbl tr:last-child td { border-bottom: none; }
+    table.cs-tbl tbody tr { cursor: pointer; transition: background .12s; }
+    table.cs-tbl tbody tr:hover td { background: #FAFAF8; }
+    .cs-name { font-weight: 600; font-size: 13.5px; color: #111827; }
+    .cs-name-sub { font-size: 11.5px; color: #9CA3AF; margin-top: 2px; }
+    .cs-num { font-variant-numeric: tabular-nums; font-weight: 600; color: #111827; }
+    .cs-num-sub { font-size: 11px; color: #9CA3AF; margin-top: 2px; }
+
+    /* PIC + status badges */
+    .pic-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 999px; font-size: 11px; font-weight: 700; background: #F5F3FF; color: #6D28D9; border: 1px solid #DDD6FE; white-space: nowrap; }
+    .pic-badge.no { background: #F3F4F6; color: #9CA3AF; border-color: #E5E7EB; }
+    .pic-badge::before { content: '★'; font-size: 10px; }
+    .pic-badge.no::before { content: '○'; }
+
+    .assign-badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; border-radius: 999px; font-size: 11px; font-weight: 600; background: #ECFDF5; color: #047857; border: 1px solid #A7F3D0; white-space: nowrap; }
+    .assign-badge.am { background: #EFF6FF; color: #1D4ED8; border-color: #BFDBFE; }
+    .assign-badge.unassigned { background: #FEF3C7; color: #92400E; border-color: #FDE68A; }
+    .assign-badge.no-cs { background: #F3F4F6; color: #6B7280; border-color: #E5E7EB; }
+
+    .interv-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 999px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+    .interv-badge.yes { background: #FEE2E2; color: #B91C1C; border: 1px solid #FECACA; }
+    .interv-badge.no  { background: #F3F4F6; color: #6B7280; border: 1px solid #E5E7EB; }
+
+    .indep-tag { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; background: #FFF7ED; color: #C2410C; border: 1px solid #FED7AA; }
+    .company-tag { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; background: #F3F4F6; color: #374151; border: 1px solid #E5E7EB; }
+
+    .plaza-tag { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: #4B5563; font-weight: 500; }
+    .plaza-tag::before { content: '📍'; font-size: 11px; }
+
+    /* Drawer (detail view) */
+    .cs-drawer-mask { position: fixed; inset: 0; background: rgba(17,24,39,.45); backdrop-filter: blur(2px); z-index: 9990; display: none; }
+    .cs-drawer-mask.open { display: block; }
+    .cs-drawer { position: fixed; top: 0; right: 0; bottom: 0; width: 720px; max-width: 100vw; background: #FAFAF8; box-shadow: -16px 0 40px rgba(0,0,0,.18); z-index: 9991; transform: translateX(100%); transition: transform .28s cubic-bezier(.2,.8,.2,1); display: flex; flex-direction: column; }
+    .cs-drawer.open { transform: translateX(0); }
+    .cs-drawer-hdr { padding: 22px 26px 18px; border-bottom: 1px solid #ECECE8; background: #fff; display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+    .cs-drawer-hdr h2 { font-size: 22px; font-weight: 700; color: #111827; letter-spacing: -0.01em; line-height: 1.2; }
+    .cs-drawer-hdr .meta-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; align-items: center; }
+    .cs-drawer-close { background: #F3F4F6; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 16px; color: #6B7280; flex-shrink: 0; }
+    .cs-drawer-close:hover { background: #E5E7EB; color: #111827; }
+    .cs-drawer-body { flex: 1; overflow-y: auto; padding: 22px 26px; }
+    .cs-drawer-section { background: #fff; border: 1px solid #ECECE8; border-radius: 14px; padding: 18px 20px; margin-bottom: 16px; }
+    .cs-drawer-section h3 { font-size: 12px; font-weight: 700; color: #6B7280; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; }
+    .cs-stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 14px; }
+    .cs-stat { }
+    .cs-stat-label { font-size: 11px; color: #9CA3AF; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+    .cs-stat-value { font-size: 18px; font-weight: 700; color: #111827; margin-top: 4px; letter-spacing: -0.01em; }
+
+    .cs-interv-banner { background: #FEF2F2; border: 1px solid #FECACA; border-radius: 12px; padding: 14px 16px; margin-bottom: 16px; }
+    .cs-interv-banner-hdr { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: #B91C1C; margin-bottom: 6px; }
+    .cs-interv-banner-body { font-size: 13px; color: #7F1D1D; line-height: 1.5; }
+
+    .cs-notes-box { width: 100%; min-height: 110px; border: 1px solid #E5E7EB; border-radius: 10px; padding: 12px 14px; font: inherit; font-size: 13px; line-height: 1.55; color: #111827; background: #FAFAF8; outline: none; resize: vertical; transition: border-color .15s; }
+    .cs-notes-box:focus { background: #fff; border-color: #111827; }
+    .cs-notes-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 10px; }
+    .cs-notes-status { font-size: 11.5px; color: #9CA3AF; }
+    .cs-notes-status.saved { color: #047857; }
+
+    /* Brokers-in-inmobiliaria mini table */
+    table.cs-brokers-mini { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-top: 4px; }
+    table.cs-brokers-mini th { background: #FAFAF8; padding: 8px 12px; text-align: left; font-size: 10px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 1px solid #F3F4F6; }
+    table.cs-brokers-mini td { padding: 10px 12px; border-bottom: 1px solid #F5F5F4; }
+    table.cs-brokers-mini tr:last-child td { border-bottom: none; }
+    .broker-active-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; vertical-align: middle; }
+    .broker-active-dot.active   { background: #10B981; box-shadow: 0 0 0 3px #D1FAE5; }
+    .broker-active-dot.dormant  { background: #F59E0B; box-shadow: 0 0 0 3px #FEF3C7; }
+    .broker-active-dot.inactive { background: #9CA3AF; box-shadow: 0 0 0 3px #F3F4F6; }
+
+    /* Action row */
+    .cs-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+    .cs-btn { background: #111827; color: #fff; border: none; border-radius: 10px; padding: 9px 16px; font-size: 13px; font-weight: 600; cursor: pointer; transition: opacity .15s; }
+    .cs-btn:hover { opacity: .88; }
+    .cs-btn.secondary { background: #fff; color: #111827; border: 1px solid #E5E7EB; }
+    .cs-btn.secondary:hover { background: #FAFAF8; }
+    .cs-btn.purple { background: linear-gradient(135deg,#671f75,#8a2a9a); }
+    .cs-btn.danger { background: #fff; color: #B91C1C; border: 1px solid #FECACA; }
+    .cs-btn.danger:hover { background: #FEF2F2; }
+    .cs-btn.small { padding: 6px 12px; font-size: 12px; border-radius: 8px; }
+
+    /* Handoff modal */
+    .cs-modal-mask { position: fixed; inset: 0; background: rgba(17,24,39,.55); z-index: 9995; display: none; align-items: center; justify-content: center; padding: 20px; }
+    .cs-modal-mask.open { display: flex; }
+    .cs-modal { background: #fff; border-radius: 18px; max-width: 480px; width: 100%; padding: 24px 26px; box-shadow: 0 30px 80px rgba(0,0,0,.30); }
+    .cs-modal h3 { font-size: 18px; font-weight: 700; color: #111827; margin-bottom: 6px; letter-spacing: -0.01em; }
+    .cs-modal .modal-sub { font-size: 13px; color: #6B7280; margin-bottom: 18px; line-height: 1.5; }
+    .cs-modal label { display: block; font-size: 11px; font-weight: 700; color: #6B7280; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; margin-top: 14px; }
+    .cs-modal label:first-of-type { margin-top: 0; }
+    .cs-modal select, .cs-modal input, .cs-modal textarea { width: 100%; border: 1px solid #E5E7EB; border-radius: 10px; padding: 9px 12px; font: inherit; font-size: 13px; outline: none; background: #fff; }
+    .cs-modal textarea { min-height: 90px; resize: vertical; line-height: 1.5; }
+    .cs-modal select:focus, .cs-modal input:focus, .cs-modal textarea:focus { border-color: #111827; }
+    .cs-modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px; }
+
+    /* Empty / loading */
+    .cs-empty { padding: 60px 24px; text-align: center; color: #9CA3AF; font-size: 13px; }
+    .cs-empty-icon { font-size: 32px; margin-bottom: 10px; opacity: .6; }
   </style>
 </head>
 <body>
@@ -373,65 +516,177 @@
 
   </div>
 
-  <!-- ── TAB 6: CS PARTNER ───────────────────────────────────────────────── -->
-  <div class="tab-pane" id="tab-cs">
+  <!-- ── TAB 6: CS PARTNER (Worklists) ───────────────────────────────────── -->
+  <div class="tab-pane cs-v2" id="tab-cs">
 
-    <div class="cards">
-      <div class="card">
-        <div class="label">Brokers monitoreados</div>
-        <div class="value" id="cs-card-brokers">—</div>
-        <div class="sub">con actividad últimos 60d</div>
+    <div class="cs-hero">
+      <div>
+        <div class="cs-hero-meta">CS Partner · Worklists</div>
+        <h1>Cuentas a trabajar.</h1>
+        <div class="cs-hero-sub">Inmobiliarias y brokers priorizados por PIC, volumen histórico y ticket promedio. Toca cualquier fila para abrir el detalle.</div>
       </div>
-      <div class="card">
-        <div class="label">Intervenciones este mes</div>
-        <div class="value" id="cs-card-interventions">—</div>
-        <div class="sub">contactos registrados</div>
-      </div>
-      <div class="card">
-        <div class="label">🟢 Acelerando</div>
-        <div class="value" id="cs-card-accelerating" style="color:#16A34A">—</div>
-        <div class="sub">más activos que el mes anterior</div>
-      </div>
-      <div class="card">
-        <div class="label">🔴 Estancados</div>
-        <div class="value" id="cs-card-stagnating" style="color:#DC2626">—</div>
-        <div class="sub">baja actividad vs. mes anterior</div>
-      </div>
-      <div class="card">
-        <div class="label">Revenue atribuido est.</div>
-        <div class="value" id="cs-card-revenue" style="color:#059669">—</div>
-        <div class="sub">MXN incremental · $3,500/deal</div>
+      <div class="cs-actions">
+        <button class="cs-btn secondary small" onclick="csRefreshMcp()">↻ Sincronizar MCP</button>
       </div>
     </div>
 
-    <!-- Broker radar table -->
-    <div class="section-wrap">
-      <div class="section-hdr">
-        <h2>🎯 Radar de brokers</h2>
-        <span id="cs-broker-count" style="font-size:12px;color:#9CA3AF"></span>
-      </div>
-      <div class="cs-filter-bar">
-        <button class="cs-filter-btn active" onclick="setCsFilter('all',this)">Todos</button>
-        <button class="cs-filter-btn" onclick="setCsFilter('stagnating',this)">🔴 Estancados</button>
-        <button class="cs-filter-btn" onclick="setCsFilter('inactive',this)">⚫ Inactivos</button>
-        <button class="cs-filter-btn" onclick="setCsFilter('stable',this)">🟡 Estables</button>
-        <button class="cs-filter-btn" onclick="setCsFilter('accelerating',this)">🟢 Acelerando</button>
-      </div>
-      <div id="cs-broker-table"><div class="empty">Carga los datos para ver el análisis de brokers.</div></div>
+    <!-- Sub-tabs: Inmobiliarias is FIRST, then Brokers -->
+    <div class="cs-segments" role="tablist">
+      <button class="cs-seg active" data-seg="inmobiliarias" onclick="setCsSeg('inmobiliarias')">
+        Worklist · Inmobiliarias <span class="cs-seg-count" id="cs-seg-count-inmob">—</span>
+      </button>
+      <button class="cs-seg" data-seg="brokers" onclick="setCsSeg('brokers')">
+        Worklist · Brokers <span class="cs-seg-count" id="cs-seg-count-brokers">—</span>
+      </button>
+      <button class="cs-seg" data-seg="actividad" onclick="setCsSeg('actividad')">
+        Actividad agente
+      </button>
     </div>
 
-    <!-- Intervention history -->
-    <div class="section-wrap">
-      <div class="section-hdr">
-        <h2>📋 Historial de intervenciones</h2>
-        <div style="display:flex;gap:8px;align-items:center">
-          <span id="cs-history-count" style="font-size:12px;color:#9CA3AF"></span>
-          <button class="btn-secondary" style="font-size:12px;padding:5px 12px" onclick="exportCsCSV()">⬇ CSV</button>
+    <!-- ===== Sub-pane: INMOBILIARIAS ===== -->
+    <div class="cs-subpane" id="cs-sub-inmobiliarias">
+      <div class="cs-kpi-strip">
+        <div class="cs-kpi"><div class="cs-kpi-label">Inmobiliarias</div><div class="cs-kpi-value" id="kpi-inmob-total">—</div><div class="cs-kpi-sub">en worklist</div></div>
+        <div class="cs-kpi"><div class="cs-kpi-label">PIC</div><div class="cs-kpi-value accent" id="kpi-inmob-pic">—</div><div class="cs-kpi-sub">ideal customer profile</div></div>
+        <div class="cs-kpi"><div class="cs-kpi-label">Asignadas a CS</div><div class="cs-kpi-value green" id="kpi-inmob-cs">—</div><div class="cs-kpi-sub">con CS Partner activo</div></div>
+        <div class="cs-kpi"><div class="cs-kpi-label">Sólo AM</div><div class="cs-kpi-value" id="kpi-inmob-am">—</div><div class="cs-kpi-sub">Account Manager, sin CS</div></div>
+        <div class="cs-kpi"><div class="cs-kpi-label">Intervención</div><div class="cs-kpi-value red" id="kpi-inmob-interv">—</div><div class="cs-kpi-sub">requieren atención</div></div>
+      </div>
+
+      <div class="cs-toolbar">
+        <div class="cs-search"><input id="inmob-search" type="text" placeholder="Buscar inmobiliaria, plaza o CS Partner..." oninput="renderInmobTable()"/></div>
+        <button class="cs-chip pic" data-filter="pic" onclick="toggleInmobFilter('pic',this)">★ PIC</button>
+        <button class="cs-chip" data-filter="interv" onclick="toggleInmobFilter('interv',this)">⚠ Intervención</button>
+        <button class="cs-chip" data-filter="unassigned" onclick="toggleInmobFilter('unassigned',this)">Sin asignar</button>
+        <button class="cs-chip" data-filter="am-only" onclick="toggleInmobFilter('am-only',this)">Sólo AM</button>
+        <select id="inmob-plaza" onchange="renderInmobTable()"><option value="">Todas las plazas</option></select>
+        <select id="inmob-sort" onchange="renderInmobTable()">
+          <option value="volume-desc">Mayor volumen histórico</option>
+          <option value="ticket-desc">Mayor ticket promedio</option>
+          <option value="pic-first">PIC primero</option>
+          <option value="interv-first">Intervención primero</option>
+          <option value="name-asc">Nombre A→Z</option>
+        </select>
+      </div>
+
+      <div class="cs-list-card">
+        <div class="cs-list-hdr">
+          <h2>Worklist · Inmobiliarias</h2>
+          <span class="meta" id="inmob-row-count">—</span>
         </div>
+        <div id="inmob-table-body"><div class="cs-empty"><div class="cs-empty-icon">🏢</div>Cargando inmobiliarias...</div></div>
       </div>
-      <div id="cs-history-body"><div class="empty">Aún no se han registrado intervenciones.</div></div>
     </div>
 
+    <!-- ===== Sub-pane: BROKERS ===== -->
+    <div class="cs-subpane" id="cs-sub-brokers" style="display:none">
+      <div class="cs-kpi-strip">
+        <div class="cs-kpi"><div class="cs-kpi-label">Brokers</div><div class="cs-kpi-value" id="kpi-brk-total">—</div><div class="cs-kpi-sub">en worklist</div></div>
+        <div class="cs-kpi"><div class="cs-kpi-label">PIC</div><div class="cs-kpi-value accent" id="kpi-brk-pic">—</div><div class="cs-kpi-sub">ideal profile</div></div>
+        <div class="cs-kpi"><div class="cs-kpi-label">Independientes</div><div class="cs-kpi-value amber" id="kpi-brk-indep">—</div><div class="cs-kpi-sub">sin inmobiliaria</div></div>
+        <div class="cs-kpi"><div class="cs-kpi-label">En inmobiliaria</div><div class="cs-kpi-value" id="kpi-brk-incompany">—</div><div class="cs-kpi-sub">asociados a empresa</div></div>
+        <div class="cs-kpi"><div class="cs-kpi-label">Sólo AM</div><div class="cs-kpi-value" id="kpi-brk-am">—</div><div class="cs-kpi-sub">sin CS Partner</div></div>
+      </div>
+
+      <div class="cs-toolbar">
+        <div class="cs-search"><input id="brk-search" type="text" placeholder="Buscar broker, inmobiliaria o plaza..." oninput="renderBrokerTable()"/></div>
+        <button class="cs-chip pic" data-filter="pic" onclick="toggleBrokerFilter('pic',this)">★ PIC</button>
+        <button class="cs-chip" data-filter="independent" onclick="toggleBrokerFilter('independent',this)">Independientes</button>
+        <button class="cs-chip" data-filter="company" onclick="toggleBrokerFilter('company',this)">En inmobiliaria</button>
+        <button class="cs-chip" data-filter="unassigned" onclick="toggleBrokerFilter('unassigned',this)">Sin CS</button>
+        <select id="brk-plaza" onchange="renderBrokerTable()"><option value="">Todas las plazas</option></select>
+        <select id="brk-sort" onchange="renderBrokerTable()">
+          <option value="volume-desc">Mayor volumen histórico</option>
+          <option value="ticket-desc">Mayor ticket promedio</option>
+          <option value="pic-first">PIC primero</option>
+          <option value="name-asc">Nombre A→Z</option>
+        </select>
+      </div>
+
+      <div class="cs-list-card">
+        <div class="cs-list-hdr">
+          <h2>Worklist · Brokers</h2>
+          <span class="meta" id="brk-row-count">—</span>
+        </div>
+        <div id="brk-table-body"><div class="cs-empty"><div class="cs-empty-icon">👤</div>Cargando brokers...</div></div>
+      </div>
+    </div>
+
+    <!-- ===== Sub-pane: ACTIVIDAD AGENTE (legacy broker radar based on M1 logs) ===== -->
+    <div class="cs-subpane" id="cs-sub-actividad" style="display:none">
+      <div class="cs-kpi-strip">
+        <div class="cs-kpi"><div class="cs-kpi-label">Brokers monitoreados</div><div class="cs-kpi-value" id="cs-card-brokers">—</div><div class="cs-kpi-sub">actividad últimos 60d</div></div>
+        <div class="cs-kpi"><div class="cs-kpi-label">Intervenciones</div><div class="cs-kpi-value" id="cs-card-interventions">—</div><div class="cs-kpi-sub">este mes</div></div>
+        <div class="cs-kpi"><div class="cs-kpi-label">Acelerando</div><div class="cs-kpi-value green" id="cs-card-accelerating">—</div><div class="cs-kpi-sub">vs. mes anterior</div></div>
+        <div class="cs-kpi"><div class="cs-kpi-label">Estancados</div><div class="cs-kpi-value red" id="cs-card-stagnating">—</div><div class="cs-kpi-sub">baja actividad</div></div>
+        <div class="cs-kpi"><div class="cs-kpi-label">Revenue est.</div><div class="cs-kpi-value green" id="cs-card-revenue">—</div><div class="cs-kpi-sub">MXN incremental</div></div>
+      </div>
+
+      <div class="cs-list-card" style="margin-bottom:18px">
+        <div class="cs-list-hdr">
+          <h2>🎯 Radar de actividad de brokers (agente IA)</h2>
+          <span class="meta" id="cs-broker-count"></span>
+        </div>
+        <div class="cs-filter-bar">
+          <button class="cs-filter-btn active" onclick="setCsFilter('all',this)">Todos</button>
+          <button class="cs-filter-btn" onclick="setCsFilter('stagnating',this)">🔴 Estancados</button>
+          <button class="cs-filter-btn" onclick="setCsFilter('inactive',this)">⚫ Inactivos</button>
+          <button class="cs-filter-btn" onclick="setCsFilter('stable',this)">🟡 Estables</button>
+          <button class="cs-filter-btn" onclick="setCsFilter('accelerating',this)">🟢 Acelerando</button>
+        </div>
+        <div id="cs-broker-table"><div class="cs-empty">Carga los datos para ver el análisis de brokers.</div></div>
+      </div>
+
+      <div class="cs-list-card">
+        <div class="cs-list-hdr">
+          <h2>📋 Historial de intervenciones</h2>
+          <div style="display:flex;gap:8px;align-items:center">
+            <span id="cs-history-count" class="meta"></span>
+            <button class="cs-btn secondary small" onclick="exportCsCSV()">⬇ CSV</button>
+          </div>
+        </div>
+        <div id="cs-history-body"><div class="cs-empty">Aún no se han registrado intervenciones.</div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===== Drawer + Modal (shared, outside subpanes) ===== -->
+  <div class="cs-drawer-mask" id="cs-drawer-mask" onclick="closeCsDrawer()"></div>
+  <div class="cs-drawer" id="cs-drawer" role="dialog" aria-modal="true">
+    <div class="cs-drawer-hdr">
+      <div style="flex:1;min-width:0">
+        <div class="cs-hero-meta" id="drawer-kind">Inmobiliaria</div>
+        <h2 id="drawer-title">—</h2>
+        <div class="meta-row" id="drawer-meta-row"></div>
+      </div>
+      <button class="cs-drawer-close" onclick="closeCsDrawer()" aria-label="Cerrar">✕</button>
+    </div>
+    <div class="cs-drawer-body" id="drawer-body"></div>
+  </div>
+
+  <div class="cs-modal-mask" id="cs-handoff-mask">
+    <div class="cs-modal">
+      <h3>Handoff de cuenta</h3>
+      <div class="modal-sub" id="cs-handoff-sub">Transfiere esta cuenta a otro CS Partner o Account Manager.</div>
+      <label>Transferir a</label>
+      <select id="cs-handoff-to"></select>
+      <label>Motivo</label>
+      <select id="cs-handoff-reason">
+        <option value="rebalance">Rebalanceo de cartera</option>
+        <option value="ooo">Vacaciones / fuera de oficina</option>
+        <option value="seniority">Cuenta requiere senioridad</option>
+        <option value="plaza">Cambio de plaza</option>
+        <option value="am-only">No requiere CS — pasa a sólo AM</option>
+        <option value="other">Otro</option>
+      </select>
+      <label>Notas para quien recibe (contexto, compromisos, último contacto…)</label>
+      <textarea id="cs-handoff-notes" placeholder="Detalles que debe saber para retomar la cuenta sin perder contexto..."></textarea>
+      <div class="cs-modal-actions">
+        <button class="cs-btn secondary" onclick="closeHandoff()">Cancelar</button>
+        <button class="cs-btn" onclick="confirmHandoff()">Confirmar handoff</button>
+      </div>
+    </div>
   </div>
 
   <!-- ── TAB 7: QA SUPERVISOR ─────────────────────────────────────────────── -->
@@ -528,7 +783,7 @@
     document.querySelectorAll('.tab-pane').forEach(p => {
       p.classList.toggle('active', p.id === 'tab-' + name);
     });
-    if (name === 'cs') renderCS();
+    if (name === 'cs') renderCsAll();
   }
 
   // ── Load data ──────────────────────────────────────────────────────────────
@@ -577,7 +832,7 @@
       renderAlerts();
       renderMejoras();
       renderTable();
-      renderCS();
+      renderCsAll();
     } catch (e) {
       status.textContent = `❌ No se pudo conectar al Worker: ${e.message}`;
     }
@@ -1203,7 +1458,634 @@
     return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
-  // ── CS PARTNER ─────────────────────────────────────────────────────────────
+  // ══════════════════════════════════════════════════════════════════════════
+  // ── CS PARTNER v2 — WORKLISTS (Inmobiliarias + Brokers) ───────────────────
+  // ══════════════════════════════════════════════════════════════════════════
+  //
+  // Data shape (sourced from MCP — see csRefreshMcp() for integration point):
+  //   inmobiliaria: { id, name, plaza, pic, past_volume, avg_ticket,
+  //                   intervention: { active: bool, reason: string },
+  //                   assignment: { kind: 'cs'|'am'|'unassigned'|'no-cs',
+  //                                 cs_partner: string|null,
+  //                                 account_manager: string|null },
+  //                   notes: string,                      // editable working notes
+  //                   broker_ids: [id, id, ...] }        // ALL brokers in the company
+  //   broker:       { id, name, email, plaza, pic, past_volume, avg_ticket,
+  //                   inmobiliaria_id: id|null,           // null => Independent
+  //                   assignment: { ... same shape },
+  //                   last_active_at: ISO string|null }   // from analytics worker
+  //
+  // Persistence:
+  //   * Working notes, handoff history, and manual assignment overrides live in
+  //     localStorage under m1_cs_v2_state until the backend MCP write paths are wired.
+
+  const CS_V2_STATE_KEY = 'm1_cs_v2_state';
+  const csV2State = (() => {
+    try { return JSON.parse(localStorage.getItem(CS_V2_STATE_KEY) || '{}'); }
+    catch { return {}; }
+  })();
+  csV2State.notes        = csV2State.notes        || {}; // { [inmob_id]: notes }
+  csV2State.assignments  = csV2State.assignments  || {}; // { [inmob_id]: { kind, cs_partner, account_manager } }
+  csV2State.handoffs     = csV2State.handoffs     || []; // log of handoff events
+  function saveCsV2State() { localStorage.setItem(CS_V2_STATE_KEY, JSON.stringify(csV2State)); }
+
+  // ── Mock dataset (replace with MCP-fed data via csRefreshMcp) ────────────
+  // The MCP exposes get_brokers, get_landlords, admin_deals etc.; in production
+  // a backend job should denormalize these into the worklist shape below.
+  const MOCK_PLAZAS  = ['CDMX', 'Guadalajara', 'Monterrey', 'Querétaro', 'Puebla', 'Mérida'];
+  const MOCK_CS_TEAM = ['Ana Ruiz', 'Diego Pérez', 'María López', 'Carlos Tovar', 'Lucía Mejía'];
+  const MOCK_AM_TEAM = ['Sofía Vega', 'Raúl Cantú'];
+
+  const MOCK_INMOBILIARIAS = [
+    { id:'i1',  name:'Inmobiliaria Polanco',     plaza:'CDMX',         pic:true,  past_volume:142, avg_ticket:38500, intervention:{active:true,  reason:'Caída del 40% en deals los últimos 60 días tras salida del broker estrella; necesitan demo de nuevas funciones de M1.'}, assignment:{kind:'cs', cs_partner:'Ana Ruiz',     account_manager:'Sofía Vega'} },
+    { id:'i2',  name:'Roma Real Estate',         plaza:'CDMX',         pic:true,  past_volume:98,  avg_ticket:42100, intervention:{active:false, reason:''}, assignment:{kind:'cs', cs_partner:'Diego Pérez',  account_manager:'Sofía Vega'} },
+    { id:'i3',  name:'Casa Tapatía',             plaza:'Guadalajara',  pic:true,  past_volume:120, avg_ticket:24800, intervention:{active:true,  reason:'Inmobiliaria reportó fricción con flujo de firma electrónica — escalado a producto, requiere acompañamiento.'}, assignment:{kind:'cs', cs_partner:'María López',  account_manager:'Raúl Cantú'} },
+    { id:'i4',  name:'Monterrey Premium',        plaza:'Monterrey',    pic:false, past_volume:64,  avg_ticket:51200, intervention:{active:false, reason:''}, assignment:{kind:'am', cs_partner:null,           account_manager:'Raúl Cantú'} },
+    { id:'i5',  name:'Querétaro Habitat',        plaza:'Querétaro',    pic:true,  past_volume:48,  avg_ticket:21900, intervention:{active:false, reason:''}, assignment:{kind:'cs', cs_partner:'Carlos Tovar', account_manager:'Sofía Vega'} },
+    { id:'i6',  name:'Puebla Urbana',            plaza:'Puebla',       pic:false, past_volume:32,  avg_ticket:18400, intervention:{active:false, reason:''}, assignment:{kind:'unassigned', cs_partner:null, account_manager:null} },
+    { id:'i7',  name:'Mérida Riviera',           plaza:'Mérida',       pic:false, past_volume:21,  avg_ticket:16700, intervention:{active:false, reason:''}, assignment:{kind:'no-cs', cs_partner:null, account_manager:'Raúl Cantú'} },
+    { id:'i8',  name:'Condesa Living',           plaza:'CDMX',         pic:true,  past_volume:88,  avg_ticket:36900, intervention:{active:true,  reason:'No están adoptando el producto post-onboarding; sólo 2 de 8 brokers han hecho login en 30 días.'}, assignment:{kind:'cs', cs_partner:'Lucía Mejía',  account_manager:'Sofía Vega'} },
+    { id:'i9',  name:'Pacífico Brokers',         plaza:'Guadalajara',  pic:false, past_volume:56,  avg_ticket:22400, intervention:{active:false, reason:''}, assignment:{kind:'cs', cs_partner:'María López',  account_manager:'Raúl Cantú'} },
+    { id:'i10', name:'Norte Capital',            plaza:'Monterrey',    pic:true,  past_volume:103, avg_ticket:46300, intervention:{active:false, reason:''}, assignment:{kind:'cs', cs_partner:'Diego Pérez',  account_manager:'Raúl Cantú'} },
+  ];
+
+  // Brokers — broker.inmobiliaria_id === null means Independent
+  const MOCK_BROKERS = [
+    { id:'b1',  name:'Patricia Solís',     email:'patricia@polanco.mx',    plaza:'CDMX',         pic:true,  inmobiliaria_id:'i1', past_volume:42, avg_ticket:39800, last_active_at:'2026-05-04' },
+    { id:'b2',  name:'Andrés Reyes',       email:'andres@polanco.mx',      plaza:'CDMX',         pic:false, inmobiliaria_id:'i1', past_volume:31, avg_ticket:35100, last_active_at:'2026-05-06' },
+    { id:'b3',  name:'Mariana Cruz',       email:'mariana@polanco.mx',     plaza:'CDMX',         pic:false, inmobiliaria_id:'i1', past_volume:18, avg_ticket:33200, last_active_at:'2026-04-12' },
+    { id:'b4',  name:'Jorge Méndez',       email:'jorge@polanco.mx',       plaza:'CDMX',         pic:false, inmobiliaria_id:'i1', past_volume:14, avg_ticket:31000, last_active_at:'2026-02-20' },
+    { id:'b5',  name:'Laura Vázquez',      email:'laura@romarealestate.mx',plaza:'CDMX',         pic:true,  inmobiliaria_id:'i2', past_volume:54, avg_ticket:43200, last_active_at:'2026-05-07' },
+    { id:'b6',  name:'Roberto Sánchez',    email:'roberto@romarealestate.mx', plaza:'CDMX',      pic:false, inmobiliaria_id:'i2', past_volume:24, avg_ticket:40500, last_active_at:'2026-05-01' },
+    { id:'b7',  name:'Diana Torres',       email:'diana@casatapatia.mx',   plaza:'Guadalajara',  pic:true,  inmobiliaria_id:'i3', past_volume:48, avg_ticket:25100, last_active_at:'2026-05-03' },
+    { id:'b8',  name:'Héctor Ramos',       email:'hector@casatapatia.mx',  plaza:'Guadalajara',  pic:false, inmobiliaria_id:'i3', past_volume:32, avg_ticket:23400, last_active_at:'2026-04-18' },
+    { id:'b9',  name:'Cecilia Ortiz',      email:'cecilia@casatapatia.mx', plaza:'Guadalajara',  pic:false, inmobiliaria_id:'i3', past_volume:22, avg_ticket:24600, last_active_at:'2026-01-30' },
+    { id:'b10', name:'Fernando Ríos',      email:'fer@mtypremium.mx',      plaza:'Monterrey',    pic:false, inmobiliaria_id:'i4', past_volume:38, avg_ticket:52400, last_active_at:'2026-05-05' },
+    { id:'b11', name:'Adriana Cano',       email:'adriana@mtypremium.mx',  plaza:'Monterrey',    pic:false, inmobiliaria_id:'i4', past_volume:16, avg_ticket:48900, last_active_at:'2026-04-09' },
+    { id:'b12', name:'Pablo Estrada',      email:'pablo@qrohabitat.mx',    plaza:'Querétaro',    pic:true,  inmobiliaria_id:'i5', past_volume:30, avg_ticket:22300, last_active_at:'2026-05-02' },
+    { id:'b13', name:'Valeria Núñez',      email:'val@condesaliving.mx',   plaza:'CDMX',         pic:true,  inmobiliaria_id:'i8', past_volume:36, avg_ticket:37500, last_active_at:'2026-05-06' },
+    { id:'b14', name:'Iván Domínguez',     email:'ivan@condesaliving.mx',  plaza:'CDMX',         pic:false, inmobiliaria_id:'i8', past_volume:22, avg_ticket:35100, last_active_at:'2026-03-25' },
+    { id:'b15', name:'Renata Salazar',     email:'renata@norte.mx',        plaza:'Monterrey',    pic:true,  inmobiliaria_id:'i10', past_volume:46, avg_ticket:47800, last_active_at:'2026-05-07' },
+    // Independent brokers (inmobiliaria_id: null)
+    { id:'b16', name:'Tomás Aguilar',      email:'tomas.aguilar@gmail.com',plaza:'CDMX',         pic:true,  inmobiliaria_id:null, past_volume:28, avg_ticket:34200, last_active_at:'2026-05-05' },
+    { id:'b17', name:'Sandra Peña',        email:'sandra.p.broker@gmail.com', plaza:'Guadalajara', pic:false, inmobiliaria_id:null, past_volume:14, avg_ticket:21000, last_active_at:'2026-04-28' },
+    { id:'b18', name:'Eduardo Lara',       email:'edulara.realtor@gmail.com', plaza:'Monterrey', pic:true, inmobiliaria_id:null, past_volume:22, avg_ticket:43500, last_active_at:'2026-05-01' },
+    { id:'b19', name:'Mónica Herrera',     email:'monica.h@outlook.com',   plaza:'Puebla',       pic:false, inmobiliaria_id:null, past_volume:9,  avg_ticket:17800, last_active_at:'2026-03-08' },
+    { id:'b20', name:'Gabriel Quintero',   email:'gquintero@gmail.com',    plaza:'CDMX',         pic:false, inmobiliaria_id:null, past_volume:6,  avg_ticket:29400, last_active_at:'2026-02-14' },
+  ];
+
+  // Working dataset (gets enriched + state-overlaid on every refresh)
+  let csInmobs   = [];
+  let csBrokers  = [];
+
+  // ── MCP integration point ───────────────────────────────────────────────
+  // Replace the body of csRefreshMcp() with a real call once the MCP-fed
+  // endpoint is wired (e.g. fetch(`${WORKER_URL}/cs/worklist`)).
+  async function csRefreshMcp() {
+    // For now we use the mock fixtures and overlay localStorage state.
+    csInmobs  = MOCK_INMOBILIARIAS.map(i => ({ ...i,
+      assignment: csV2State.assignments[i.id] || { ...i.assignment },
+      notes: csV2State.notes[i.id] ?? '',
+    }));
+    csBrokers = MOCK_BROKERS.map(b => ({ ...b }));
+    // Cascade: if an inmobiliaria has a CS Partner assigned, auto-assign all
+    // its brokers to the same CS Partner (req: "If an inmobiliaria is
+    // assigned to a person, all the brokers should be automatically assigned").
+    cascadeAssignments();
+    populatePlazaOptions();
+    renderCsAll();
+  }
+
+  function cascadeAssignments() {
+    const byInmob = {};
+    csInmobs.forEach(i => byInmob[i.id] = i);
+    csBrokers.forEach(b => {
+      if (b.inmobiliaria_id && byInmob[b.inmobiliaria_id]) {
+        // Inherit from the parent inmobiliaria
+        b.assignment = { ...byInmob[b.inmobiliaria_id].assignment };
+      } else {
+        // Independent — keep its own assignment if any, else unassigned
+        b.assignment = b.assignment || { kind:'unassigned', cs_partner:null, account_manager:null };
+      }
+    });
+  }
+
+  function populatePlazaOptions() {
+    const plazas = [...new Set([...csInmobs.map(i=>i.plaza), ...csBrokers.map(b=>b.plaza)])].sort();
+    const optsHtml = '<option value="">Todas las plazas</option>' + plazas.map(p => `<option value="${esc(p)}">${esc(p)}</option>`).join('');
+    const a = document.getElementById('inmob-plaza'); if (a) a.innerHTML = optsHtml;
+    const b = document.getElementById('brk-plaza');   if (b) b.innerHTML = optsHtml;
+  }
+
+  // ── Sub-tab switching ────────────────────────────────────────────────────
+  function setCsSeg(seg) {
+    document.querySelectorAll('.cs-seg').forEach(b => b.classList.toggle('active', b.dataset.seg === seg));
+    document.getElementById('cs-sub-inmobiliarias').style.display = seg === 'inmobiliarias' ? '' : 'none';
+    document.getElementById('cs-sub-brokers').style.display       = seg === 'brokers'       ? '' : 'none';
+    document.getElementById('cs-sub-actividad').style.display     = seg === 'actividad'     ? '' : 'none';
+    if (seg === 'actividad') renderCS();
+  }
+
+  // ── Filters ─────────────────────────────────────────────────────────────
+  let inmobFilters = new Set();
+  let brkFilters   = new Set();
+  function toggleInmobFilter(name, btn) {
+    if (inmobFilters.has(name)) { inmobFilters.delete(name); btn.classList.remove('active'); }
+    else { inmobFilters.add(name); btn.classList.add('active'); }
+    renderInmobTable();
+  }
+  function toggleBrokerFilter(name, btn) {
+    if (brkFilters.has(name)) { brkFilters.delete(name); btn.classList.remove('active'); }
+    else { brkFilters.add(name); btn.classList.add('active'); }
+    renderBrokerTable();
+  }
+
+  // ── Render dispatchers ──────────────────────────────────────────────────
+  function renderCsAll() {
+    if (!csInmobs.length && !csBrokers.length) {
+      // First time visiting — pull from "MCP" (mock).
+      csRefreshMcp();
+      return;
+    }
+    renderInmobKpis();
+    renderInmobTable();
+    renderBrokerKpis();
+    renderBrokerTable();
+    document.getElementById('cs-seg-count-inmob').textContent    = csInmobs.length;
+    document.getElementById('cs-seg-count-brokers').textContent  = csBrokers.length;
+    // Legacy radar
+    if (allLogs.length) renderCS();
+  }
+
+  // ── Formatters ──────────────────────────────────────────────────────────
+  function fmtMxn(n) {
+    if (n == null) return '—';
+    if (n >= 1_000_000) return `$${(n/1_000_000).toFixed(1)}M`;
+    if (n >= 1000) return `$${Math.round(n/1000)}k`;
+    return `$${Math.round(n).toLocaleString('es-MX')}`;
+  }
+  function picBadge(pic) {
+    return pic ? `<span class="pic-badge">PIC</span>` : `<span class="pic-badge no">No PIC</span>`;
+  }
+  function assignBadge(a) {
+    if (!a || a.kind === 'unassigned') return `<span class="assign-badge unassigned">Sin asignar</span>`;
+    if (a.kind === 'no-cs')     return `<span class="assign-badge no-cs">Sólo AM</span>`;
+    if (a.kind === 'am')        return `<span class="assign-badge am">AM · ${esc(a.account_manager||'—')}</span>`;
+    return `<span class="assign-badge">CS · ${esc(a.cs_partner||'—')}</span>`;
+  }
+  function intervBadge(intv) {
+    return intv && intv.active
+      ? `<span class="interv-badge yes">⚠ Sí</span>`
+      : `<span class="interv-badge no">No</span>`;
+  }
+
+  // ── Inmobiliarias rendering ─────────────────────────────────────────────
+  function renderInmobKpis() {
+    document.getElementById('kpi-inmob-total').textContent  = csInmobs.length;
+    document.getElementById('kpi-inmob-pic').textContent    = csInmobs.filter(i=>i.pic).length;
+    document.getElementById('kpi-inmob-cs').textContent     = csInmobs.filter(i=>i.assignment.kind==='cs').length;
+    document.getElementById('kpi-inmob-am').textContent     = csInmobs.filter(i=>i.assignment.kind==='am' || i.assignment.kind==='no-cs').length;
+    document.getElementById('kpi-inmob-interv').textContent = csInmobs.filter(i=>i.intervention?.active).length;
+  }
+
+  function renderInmobTable() {
+    const q     = (document.getElementById('inmob-search')?.value || '').toLowerCase().trim();
+    const plaza = document.getElementById('inmob-plaza')?.value || '';
+    const sort  = document.getElementById('inmob-sort')?.value  || 'volume-desc';
+
+    let list = csInmobs.slice();
+    if (q) list = list.filter(i =>
+      i.name.toLowerCase().includes(q) ||
+      (i.plaza||'').toLowerCase().includes(q) ||
+      (i.assignment?.cs_partner||'').toLowerCase().includes(q)
+    );
+    if (plaza) list = list.filter(i => i.plaza === plaza);
+    if (inmobFilters.has('pic'))         list = list.filter(i => i.pic);
+    if (inmobFilters.has('interv'))      list = list.filter(i => i.intervention?.active);
+    if (inmobFilters.has('unassigned'))  list = list.filter(i => i.assignment?.kind === 'unassigned');
+    if (inmobFilters.has('am-only'))     list = list.filter(i => i.assignment?.kind === 'am' || i.assignment?.kind === 'no-cs');
+
+    const sorters = {
+      'volume-desc':  (a,b) => (b.past_volume||0) - (a.past_volume||0),
+      'ticket-desc':  (a,b) => (b.avg_ticket||0)  - (a.avg_ticket||0),
+      'pic-first':    (a,b) => (b.pic?1:0) - (a.pic?1:0) || (b.past_volume||0)-(a.past_volume||0),
+      'interv-first': (a,b) => ((b.intervention?.active?1:0)-(a.intervention?.active?1:0)) || (b.past_volume||0)-(a.past_volume||0),
+      'name-asc':     (a,b) => a.name.localeCompare(b.name),
+    };
+    list.sort(sorters[sort] || sorters['volume-desc']);
+
+    document.getElementById('inmob-row-count').textContent = `${list.length} inmobiliaria${list.length!==1?'s':''}`;
+
+    if (!list.length) {
+      document.getElementById('inmob-table-body').innerHTML = `<div class="cs-empty"><div class="cs-empty-icon">🔍</div>Sin resultados con esos filtros.</div>`;
+      return;
+    }
+
+    const rows = list.map(i => `
+      <tr onclick="openInmobDrawer('${i.id}')">
+        <td>
+          <div class="cs-name">${esc(i.name)}</div>
+          <div class="cs-name-sub">${i.broker_count_label || (csBrokers.filter(b=>b.inmobiliaria_id===i.id).length + ' brokers')}</div>
+        </td>
+        <td>${picBadge(i.pic)}</td>
+        <td><span class="plaza-tag">${esc(i.plaza)}</span></td>
+        <td>
+          <div class="cs-num">${i.past_volume||0}</div>
+          <div class="cs-num-sub">deals históricos</div>
+        </td>
+        <td>
+          <div class="cs-num">${fmtMxn(i.avg_ticket)}</div>
+          <div class="cs-num-sub">ticket promedio</div>
+        </td>
+        <td>${intervBadge(i.intervention)}</td>
+        <td>${assignBadge(i.assignment)}</td>
+      </tr>
+    `).join('');
+
+    document.getElementById('inmob-table-body').innerHTML = `
+      <table class="cs-tbl">
+        <thead><tr>
+          <th>Inmobiliaria</th>
+          <th>PIC</th>
+          <th>Plaza</th>
+          <th>Volumen histórico</th>
+          <th>Ticket promedio</th>
+          <th>Intervención</th>
+          <th>Asignación</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+  }
+
+  // ── Brokers rendering ───────────────────────────────────────────────────
+  function renderBrokerKpis() {
+    document.getElementById('kpi-brk-total').textContent     = csBrokers.length;
+    document.getElementById('kpi-brk-pic').textContent       = csBrokers.filter(b=>b.pic).length;
+    document.getElementById('kpi-brk-indep').textContent     = csBrokers.filter(b=>!b.inmobiliaria_id).length;
+    document.getElementById('kpi-brk-incompany').textContent = csBrokers.filter(b=>b.inmobiliaria_id).length;
+    document.getElementById('kpi-brk-am').textContent        = csBrokers.filter(b=>b.assignment?.kind==='am' || b.assignment?.kind==='no-cs').length;
+  }
+
+  function renderBrokerTable() {
+    const q     = (document.getElementById('brk-search')?.value || '').toLowerCase().trim();
+    const plaza = document.getElementById('brk-plaza')?.value || '';
+    const sort  = document.getElementById('brk-sort')?.value  || 'volume-desc';
+
+    const inmobName = id => (csInmobs.find(i=>i.id===id)?.name) || '';
+
+    let list = csBrokers.slice();
+    if (q) list = list.filter(b =>
+      b.name.toLowerCase().includes(q) ||
+      (b.email||'').toLowerCase().includes(q) ||
+      (b.plaza||'').toLowerCase().includes(q) ||
+      inmobName(b.inmobiliaria_id).toLowerCase().includes(q)
+    );
+    if (plaza) list = list.filter(b => b.plaza === plaza);
+    if (brkFilters.has('pic'))         list = list.filter(b => b.pic);
+    if (brkFilters.has('independent')) list = list.filter(b => !b.inmobiliaria_id);
+    if (brkFilters.has('company'))     list = list.filter(b => !!b.inmobiliaria_id);
+    if (brkFilters.has('unassigned'))  list = list.filter(b => !b.assignment || b.assignment.kind === 'unassigned' || b.assignment.kind === 'no-cs' || b.assignment.kind === 'am');
+
+    const sorters = {
+      'volume-desc': (a,b) => (b.past_volume||0) - (a.past_volume||0),
+      'ticket-desc': (a,b) => (b.avg_ticket||0)  - (a.avg_ticket||0),
+      'pic-first':   (a,b) => (b.pic?1:0) - (a.pic?1:0) || (b.past_volume||0) - (a.past_volume||0),
+      'name-asc':    (a,b) => a.name.localeCompare(b.name),
+    };
+    list.sort(sorters[sort] || sorters['volume-desc']);
+
+    document.getElementById('brk-row-count').textContent = `${list.length} broker${list.length!==1?'s':''}`;
+
+    if (!list.length) {
+      document.getElementById('brk-table-body').innerHTML = `<div class="cs-empty"><div class="cs-empty-icon">🔍</div>Sin resultados con esos filtros.</div>`;
+      return;
+    }
+
+    const rows = list.map(b => {
+      const company = b.inmobiliaria_id
+        ? `<span class="company-tag">${esc(inmobName(b.inmobiliaria_id))}</span>`
+        : `<span class="indep-tag">Independiente</span>`;
+      return `
+        <tr onclick="openBrokerDrawer('${b.id}')">
+          <td>
+            <div class="cs-name">${esc(b.name)}</div>
+            <div class="cs-name-sub">${esc(b.email||'')}</div>
+          </td>
+          <td>${picBadge(b.pic)}</td>
+          <td>${company}</td>
+          <td><span class="plaza-tag">${esc(b.plaza)}</span></td>
+          <td>
+            <div class="cs-num">${b.past_volume||0}</div>
+            <div class="cs-num-sub">deals históricos</div>
+          </td>
+          <td>
+            <div class="cs-num">${fmtMxn(b.avg_ticket)}</div>
+            <div class="cs-num-sub">ticket promedio</div>
+          </td>
+          <td>${assignBadge(b.assignment)}</td>
+        </tr>`;
+    }).join('');
+
+    document.getElementById('brk-table-body').innerHTML = `
+      <table class="cs-tbl">
+        <thead><tr>
+          <th>Broker</th>
+          <th>PIC</th>
+          <th>Inmobiliaria</th>
+          <th>Plaza</th>
+          <th>Volumen histórico</th>
+          <th>Ticket promedio</th>
+          <th>Asignación</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+  }
+
+  // ── Drawer ───────────────────────────────────────────────────────────────
+  let csDrawerCtx = null; // { kind:'inmob'|'broker', id }
+
+  function openCsDrawer() {
+    document.getElementById('cs-drawer').classList.add('open');
+    document.getElementById('cs-drawer-mask').classList.add('open');
+  }
+  function closeCsDrawer() {
+    document.getElementById('cs-drawer').classList.remove('open');
+    document.getElementById('cs-drawer-mask').classList.remove('open');
+    csDrawerCtx = null;
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeCsDrawer(); closeHandoff(); } });
+
+  function brokerActivity(b) {
+    if (!b.last_active_at) return { tag:'inactive', label:'Sin actividad', days: null };
+    const days = Math.floor((Date.now() - new Date(b.last_active_at)) / 86400000);
+    if (days <= 14) return { tag:'active',   label:`Activo hace ${days}d`,  days };
+    if (days <= 60) return { tag:'dormant',  label:`Dormido hace ${days}d`, days };
+    return                  { tag:'inactive', label:`Inactivo hace ${days}d`, days };
+  }
+
+  function openInmobDrawer(id) {
+    const i = csInmobs.find(x => x.id === id);
+    if (!i) return;
+    csDrawerCtx = { kind: 'inmob', id };
+
+    document.getElementById('drawer-kind').textContent  = 'Inmobiliaria';
+    document.getElementById('drawer-title').textContent = i.name;
+    document.getElementById('drawer-meta-row').innerHTML = `
+      ${picBadge(i.pic)}
+      <span class="plaza-tag">${esc(i.plaza)}</span>
+      ${assignBadge(i.assignment)}
+      ${intervBadge(i.intervention)}
+    `;
+
+    const brokers = csBrokers.filter(b => b.inmobiliaria_id === i.id);
+    const active     = brokers.filter(b => brokerActivity(b).tag === 'active').length;
+    const dormant    = brokers.filter(b => brokerActivity(b).tag === 'dormant').length;
+    const inactive   = brokers.filter(b => brokerActivity(b).tag === 'inactive').length;
+
+    const intervHtml = i.intervention?.active ? `
+      <div class="cs-interv-banner">
+        <div class="cs-interv-banner-hdr">⚠ Intervención requerida — motivo</div>
+        <div class="cs-interv-banner-body">${esc(i.intervention.reason || 'Sin motivo registrado.')}</div>
+      </div>` : '';
+
+    const brokersTable = brokers.length ? `
+      <table class="cs-brokers-mini">
+        <thead><tr>
+          <th></th><th>Broker</th><th>PIC</th><th>Volumen</th><th>Ticket</th><th>Estado</th>
+        </tr></thead>
+        <tbody>
+          ${brokers.map(b => {
+            const a = brokerActivity(b);
+            return `<tr style="cursor:pointer" onclick="openBrokerDrawer('${b.id}')">
+              <td><span class="broker-active-dot ${a.tag}"></span></td>
+              <td>
+                <div style="font-weight:600;color:#111827">${esc(b.name)}</div>
+                <div style="font-size:11px;color:#9CA3AF">${esc(b.email||'')}</div>
+              </td>
+              <td>${b.pic?'<span class="pic-badge" style="font-size:10px;padding:2px 7px">PIC</span>':'<span style="color:#D1D5DB">—</span>'}</td>
+              <td class="cs-num">${b.past_volume||0}</td>
+              <td class="cs-num">${fmtMxn(b.avg_ticket)}</td>
+              <td style="font-size:11.5px;color:#6B7280">${a.label}</td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>` : `<div style="color:#9CA3AF;font-size:13px">Sin brokers asociados.</div>`;
+
+    document.getElementById('drawer-body').innerHTML = `
+      ${intervHtml}
+
+      <div class="cs-drawer-section">
+        <h3>Resumen comercial</h3>
+        <div class="cs-stat-grid">
+          <div class="cs-stat"><div class="cs-stat-label">Volumen histórico</div><div class="cs-stat-value">${i.past_volume||0} deals</div></div>
+          <div class="cs-stat"><div class="cs-stat-label">Ticket promedio</div><div class="cs-stat-value">${fmtMxn(i.avg_ticket)}</div></div>
+          <div class="cs-stat"><div class="cs-stat-label">Brokers asociados</div><div class="cs-stat-value">${brokers.length}</div></div>
+          <div class="cs-stat"><div class="cs-stat-label">Activos · Dormidos · Inactivos</div><div class="cs-stat-value" style="font-size:15px">${active} · ${dormant} · ${inactive}</div></div>
+        </div>
+      </div>
+
+      <div class="cs-drawer-section">
+        <h3>Brokers de esta inmobiliaria</h3>
+        <div style="font-size:12px;color:#6B7280;margin-bottom:10px">Toda la cartera — usa esto para identificar a quiénes podemos reactivar.</div>
+        ${brokersTable}
+      </div>
+
+      <div class="cs-drawer-section">
+        <h3>Cómo trabajar con esta inmobiliaria</h3>
+        <textarea class="cs-notes-box" id="inmob-notes-${i.id}" placeholder="Persona de contacto, horarios, productos que adoptaron, sensibilidades, escaleras de comunicación, último compromiso..." oninput="markNotesDirty('${i.id}')">${esc(i.notes||'')}</textarea>
+        <div class="cs-notes-row">
+          <span class="cs-notes-status" id="notes-status-${i.id}">Notas internas — visibles para el equipo CS</span>
+          <button class="cs-btn small" onclick="saveInmobNotes('${i.id}')">💾 Guardar notas</button>
+        </div>
+      </div>
+
+      <div class="cs-drawer-section">
+        <h3>Asignación</h3>
+        <div style="font-size:13px;color:#374151;line-height:1.6;margin-bottom:14px">
+          <strong>CS Partner:</strong> ${esc(i.assignment?.cs_partner || '— Sin CS Partner —')}<br>
+          <strong>Account Manager:</strong> ${esc(i.assignment?.account_manager || '— Sin AM —')}<br>
+          <strong>Estado:</strong> ${assignBadge(i.assignment)}
+        </div>
+        <div class="cs-actions">
+          <button class="cs-btn" onclick="openHandoff('inmob','${i.id}')">↔ Handoff</button>
+          <button class="cs-btn secondary" onclick="markAmOnly('${i.id}')">Marcar como sólo AM</button>
+        </div>
+        <div style="font-size:11.5px;color:#9CA3AF;margin-top:10px;line-height:1.5">
+          Al cambiar la asignación, todos los brokers de esta inmobiliaria heredan automáticamente al mismo CS Partner / AM.
+        </div>
+      </div>
+    `;
+
+    openCsDrawer();
+  }
+
+  function openBrokerDrawer(id) {
+    const b = csBrokers.find(x => x.id === id);
+    if (!b) return;
+    csDrawerCtx = { kind:'broker', id };
+
+    const inmob = b.inmobiliaria_id ? csInmobs.find(x=>x.id===b.inmobiliaria_id) : null;
+    const a     = brokerActivity(b);
+
+    document.getElementById('drawer-kind').textContent  = 'Broker';
+    document.getElementById('drawer-title').textContent = b.name;
+    document.getElementById('drawer-meta-row').innerHTML = `
+      ${picBadge(b.pic)}
+      ${inmob ? `<span class="company-tag">${esc(inmob.name)}</span>` : `<span class="indep-tag">Independiente</span>`}
+      <span class="plaza-tag">${esc(b.plaza)}</span>
+      ${assignBadge(b.assignment)}
+    `;
+
+    document.getElementById('drawer-body').innerHTML = `
+      <div class="cs-drawer-section">
+        <h3>Contacto</h3>
+        <div style="font-size:13.5px;color:#111827;font-weight:600">${esc(b.name)}</div>
+        <div style="font-size:13px;color:#6B7280;margin-top:2px">${esc(b.email||'—')}</div>
+      </div>
+
+      <div class="cs-drawer-section">
+        <h3>Resumen comercial</h3>
+        <div class="cs-stat-grid">
+          <div class="cs-stat"><div class="cs-stat-label">Volumen histórico</div><div class="cs-stat-value">${b.past_volume||0} deals</div></div>
+          <div class="cs-stat"><div class="cs-stat-label">Ticket promedio</div><div class="cs-stat-value">${fmtMxn(b.avg_ticket)}</div></div>
+          <div class="cs-stat"><div class="cs-stat-label">PIC</div><div class="cs-stat-value">${b.pic?'Sí':'No'}</div></div>
+          <div class="cs-stat"><div class="cs-stat-label">Estado</div><div class="cs-stat-value" style="font-size:15px"><span class="broker-active-dot ${a.tag}"></span>${a.label}</div></div>
+        </div>
+      </div>
+
+      ${inmob ? `
+        <div class="cs-drawer-section">
+          <h3>Inmobiliaria</h3>
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+            <div>
+              <div style="font-weight:600;color:#111827">${esc(inmob.name)}</div>
+              <div style="font-size:12px;color:#6B7280;margin-top:2px">Asignación heredada — ${assignBadge(inmob.assignment)}</div>
+            </div>
+            <button class="cs-btn secondary small" onclick="openInmobDrawer('${inmob.id}')">Abrir inmobiliaria →</button>
+          </div>
+        </div>` : `
+        <div class="cs-drawer-section">
+          <h3>Independiente</h3>
+          <div style="font-size:13px;color:#6B7280;line-height:1.55">Este broker no está asociado a ninguna inmobiliaria. Se trabaja directamente sin cascada de asignación.</div>
+        </div>
+      `}
+
+      <div class="cs-drawer-section">
+        <h3>Asignación</h3>
+        <div style="font-size:13px;color:#374151;line-height:1.6;margin-bottom:14px">
+          <strong>CS Partner:</strong> ${esc(b.assignment?.cs_partner || '—')}<br>
+          <strong>Account Manager:</strong> ${esc(b.assignment?.account_manager || '—')}
+        </div>
+        <div class="cs-actions">
+          <button class="cs-btn" onclick="openHandoff('broker','${b.id}')">↔ Handoff</button>
+        </div>
+      </div>
+    `;
+
+    openCsDrawer();
+  }
+
+  // ── Notes (per inmobiliaria) ─────────────────────────────────────────────
+  function markNotesDirty(id) {
+    const s = document.getElementById(`notes-status-${id}`);
+    if (s) { s.textContent = 'Sin guardar — toca "Guardar notas"'; s.classList.remove('saved'); }
+  }
+  function saveInmobNotes(id) {
+    const ta = document.getElementById(`inmob-notes-${id}`);
+    if (!ta) return;
+    csV2State.notes[id] = ta.value;
+    saveCsV2State();
+    const inmob = csInmobs.find(i => i.id === id);
+    if (inmob) inmob.notes = ta.value;
+    const s = document.getElementById(`notes-status-${id}`);
+    if (s) { s.textContent = '✓ Guardado · ' + new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'}); s.classList.add('saved'); }
+  }
+
+  // ── Handoff modal ────────────────────────────────────────────────────────
+  let handoffCtx = null;
+  function openHandoff(kind, id) {
+    handoffCtx = { kind, id };
+    const sel = document.getElementById('cs-handoff-to');
+    sel.innerHTML = [
+      '<optgroup label="CS Partners">',
+        ...MOCK_CS_TEAM.map(n => `<option value="cs::${esc(n)}">CS · ${esc(n)}</option>`),
+      '</optgroup>',
+      '<optgroup label="Account Managers">',
+        ...MOCK_AM_TEAM.map(n => `<option value="am::${esc(n)}">AM · ${esc(n)}</option>`),
+      '</optgroup>',
+      '<option value="no-cs::">Sólo Account Manager (sin CS Partner)</option>',
+    ].join('');
+    const targetName = kind === 'inmob'
+      ? csInmobs.find(i=>i.id===id)?.name
+      : csBrokers.find(b=>b.id===id)?.name;
+    document.getElementById('cs-handoff-sub').textContent = `Transfiere "${targetName}" a otro miembro del equipo. Las notas viajan con la cuenta.`;
+    document.getElementById('cs-handoff-notes').value = '';
+    document.getElementById('cs-handoff-mask').classList.add('open');
+  }
+  function closeHandoff() {
+    document.getElementById('cs-handoff-mask').classList.remove('open');
+    handoffCtx = null;
+  }
+  function confirmHandoff() {
+    if (!handoffCtx) return;
+    const [kind, name] = (document.getElementById('cs-handoff-to').value || '::').split('::');
+    const reason = document.getElementById('cs-handoff-reason').value;
+    const notes  = document.getElementById('cs-handoff-notes').value.trim();
+
+    if (handoffCtx.kind === 'inmob') {
+      const i = csInmobs.find(x => x.id === handoffCtx.id);
+      if (!i) return;
+      const next = { ...i.assignment };
+      if (kind === 'cs')        { next.kind = 'cs'; next.cs_partner = name; }
+      else if (kind === 'am')   { next.kind = 'am'; next.account_manager = name; next.cs_partner = null; }
+      else if (kind === 'no-cs'){ next.kind = 'no-cs'; next.cs_partner = null; }
+      i.assignment = next;
+      csV2State.assignments[i.id] = next;
+    } else {
+      // broker handoff (only meaningful for independents — others inherit from inmob)
+      const b = csBrokers.find(x => x.id === handoffCtx.id);
+      if (!b) return;
+      const next = { ...(b.assignment||{}) };
+      if (kind === 'cs')        { next.kind = 'cs'; next.cs_partner = name; }
+      else if (kind === 'am')   { next.kind = 'am'; next.account_manager = name; next.cs_partner = null; }
+      else if (kind === 'no-cs'){ next.kind = 'no-cs'; next.cs_partner = null; }
+      b.assignment = next;
+    }
+
+    csV2State.handoffs.push({
+      ts: new Date().toISOString(),
+      kind: handoffCtx.kind,
+      target_id: handoffCtx.id,
+      to: { kind, name },
+      reason,
+      notes,
+    });
+    saveCsV2State();
+    cascadeAssignments();
+    renderCsAll();
+    closeHandoff();
+    if (csDrawerCtx?.kind === 'inmob') openInmobDrawer(csDrawerCtx.id);
+    if (csDrawerCtx?.kind === 'broker') openBrokerDrawer(csDrawerCtx.id);
+  }
+
+  function markAmOnly(id) {
+    const i = csInmobs.find(x => x.id === id);
+    if (!i) return;
+    if (!confirm(`Marcar "${i.name}" como sólo Account Manager (sin CS Partner)? Esta cuenta no aparecerá en la cartera de CS.`)) return;
+    i.assignment = { kind:'no-cs', cs_partner:null, account_manager: i.assignment?.account_manager || null };
+    csV2State.assignments[i.id] = i.assignment;
+    saveCsV2State();
+    cascadeAssignments();
+    renderCsAll();
+    openInmobDrawer(id);
+  }
+
+  // Auto-pull mock data on page load so the worklists are ready
+  window.addEventListener('load', () => { csRefreshMcp(); });
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // ── CS PARTNER (legacy radar — drives the "Actividad agente" sub-pane) ────
+  // ══════════════════════════════════════════════════════════════════════════
 
   const CS_TICKET_MXN = 3500; // revenue por deal por mes (ajustable)
   let csInterventions = JSON.parse(localStorage.getItem('m1_cs_interventions') || '[]');
